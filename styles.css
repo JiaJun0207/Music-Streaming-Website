@@ -91,16 +91,22 @@ body {
 }
 
 .main-content {
+    background-color: #33334d;
     margin-left: 250px;
     padding: 20px;
     width: calc(100% - 250px);
 }
 
 .header {
+    background-color: #8A2387; /* Old browsers */
+    background: -webkit-linear-gradient(to right, #8A2387, #E94057, #F27121); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #8A2387, #E94057, #F27121); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     display: flex;
+    margin-left: 40px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     justify-content: flex-end;
     padding: 20px;
-    background-color: #ffffff;
 }
 
 .counter{
@@ -119,11 +125,15 @@ body {
 }
 
 .banner {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    background-color: #8A2387; /* Old browsers */
+    background: -webkit-linear-gradient(to right, #8A2387, #E94057, #F27121); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #8A2387, #E94057, #F27121); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     text-align: center;
+    padding: 40px;
+    margin-left: 40px;
+    margin-bottom: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .banner h1 {
@@ -163,29 +173,37 @@ body {
 }
 
 .content {
-    background-color: #ffffff;
+    
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
+    margin-left: 40px;
 }
 
 .content-header {
     display: flex;
-    justify-content: space-around;
+    justify-content:space-evenly;
     margin-bottom: 20px;
 }
 
 .content-button {
     padding: 10px 20px;
-    border: none;
+    border: #7700ff;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    background-color: #6200ea;
+    background-color: #ffffff;
+    color: #7700ff;
+    transition: background 0.3s ease;
+}
+
+.content-button:hover{
+    background-color: #7700ff;
     color: #ffffff;
 }
 
 .albums {
+    margin-left: 40px;
     display: flex;
     gap: 20px;
 }
@@ -200,7 +218,7 @@ body {
 
 .album img {
     width: 100px;
-    height: 100px;
+    height: 130px;
     border-radius: 50%;
     margin-bottom: 10px;
 }
@@ -216,6 +234,7 @@ body {
 }
 
 .trending {
+    margin-left: 40px;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
