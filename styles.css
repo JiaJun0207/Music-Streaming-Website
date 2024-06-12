@@ -103,7 +103,15 @@ body {
     background-color: #ffffff;
 }
 
+.counter{
+    border-color: #1f1f2e;
+    padding-top: 15px;
+    align-items: center;
+    font-weight: bold;
+}
+
 .search-bar {
+    margin-left: 10px;
     width: 300px;
     padding: 10px;
     border: 1px solid #cccccc;
