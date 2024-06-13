@@ -1,8 +1,8 @@
 <?php
 // Database connection setup
 $servername = "localhost";
-$username = "root"; // default XAMPP username
-$password = ""; // default XAMPP password
+$username = "root";
+$password = "";
 $dbname = "music_database";
 
 // Create connection
@@ -17,6 +17,9 @@ if ($conn->connect_error) {
 function getSongDetails($song_id, $conn) {
     $sql = "SELECT * FROM songs WHERE song_id = ?";
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
     $stmt->bind_param("i", $song_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -41,7 +44,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($songDetails['title']); ?></title>
-    <link rel="stylesheet" href="css\phpSSP.css">
+    <link rel="stylesheet" href="..css\phpSSP.css">
 </head>
 <body>
     <div class="song-container">
