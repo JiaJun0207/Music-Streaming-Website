@@ -23,6 +23,7 @@ body {
 
 .contact-form {
     border-right: 1px solid #ddd;
+    padding-right:35px;
     flex: 1;
 }
 
@@ -86,3 +87,4 @@ button {
     width: 20px;
     margin-right: 10px;
 }
+
