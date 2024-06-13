@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #28283d;
+    background-color: #25253a;
     display: flex;
 }
 
@@ -245,47 +245,49 @@ body {
 
 .trending {
     width: 250px;
-    height:920px;
-    background: #654ea3;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #eaafc8, #654ea3);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #eaafc8, #654ea3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+    max-height: calc(100vh - 40px); 
+    background: #654ea3;
+    background: -webkit-linear-gradient(to top, #eaafc8, #654ea3);
+    background: linear-gradient(to top, #eaafc8, #654ea3);
     padding: 20px;
     border-radius: 10px;
     position: fixed;
     top: 20px;
     right: 20px;
+    overflow-y: auto; 
 }
 
 .trending h1 {
     font-size: 23px;
-    margin-bottom: 35px;
+    margin-bottom: 20px; 
 }
 
 .trending ul {
-    list-style:decimal;
+    list-style: decimal;
     padding: 0;
 }
 
 .trending li {
     margin-left: 30px;
-    margin-top: 20px;;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
 .trending a {
     font-size: 19px;
-    text-decoration:none;
+    text-decoration: none;
     color: #000000;
 }
 
-#ads{
+#ads {
     color: #6200ea;
-    padding-top: 80px;
+    margin-top: auto; /* Push #ads to the bottom */
+    padding-top: 10px;
     padding-left: 20px;
+    margin-bottom: 20px;
 }
 
 img {
     max-width: 100%;
     height: auto;
-}
+}   
