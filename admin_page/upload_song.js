@@ -10,7 +10,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     .then(response => response.json())
     .then(data => {
         alert('Song uploaded successfully!');
-        window.location.href = 'admin.html';
+        window.location.href = 'song_list.html';
     })
     .catch(error => {
         console.error('Error:', error);

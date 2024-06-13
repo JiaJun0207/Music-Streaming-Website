@@ -43,5 +43,5 @@ function deleteSong(id) {
 }
 
 document.getElementById('addNewBtn').addEventListener('click', function() {
-    window.location.href = 'upload.html';
+    window.location.href = 'upload_song.html';
 });
