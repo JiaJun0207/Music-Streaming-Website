@@ -63,13 +63,7 @@ body {
     text-decoration: none;
     font-size: 18px;
     padding: 15px 20px;
-    transition: background-color 0.3s, color 0.3s;
-    display: flex;
-    align-items: center;
-}
-
-.navbar-link i {
-    margin-right: 10px;
+    transition: background-color 0.3s;
 }
 
 .navbar-link:hover {
@@ -97,8 +91,8 @@ body {
     margin-right: 15px;
 }
 
-.profile-link {
-    color: #ffffff;
+.profile-link{
+    color:#ffffff;
 }
 
 .navbar-user span {
@@ -175,6 +169,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    
 }
 
 .donate-button {
@@ -221,7 +216,7 @@ body {
     overflow-x: hidden; /* Hide the scrollbar */
     white-space: nowrap; /* Prevent line breaks */
     width: 100%;
-    position: relative;
+    position:relative;
     justify-content: space-evenly;
     margin-bottom: 20px;
 }
@@ -247,7 +242,6 @@ body {
     display: block;
     margin-bottom: 10px;
 }
-
 .see-details {
     text-decoration: none;
     color: #6200ea;
@@ -291,7 +285,7 @@ body {
 
 #ads {
     color: #6200ea;
-    margin-top: auto; /* Push #ads to the bottom */
+    margin-top: auto; 
     padding-top: 10px;
     padding-left: 20px;
     margin-bottom: 20px;
@@ -300,4 +294,4 @@ body {
 img {
     max-width: 100%;
     height: auto;
-}
+}   
