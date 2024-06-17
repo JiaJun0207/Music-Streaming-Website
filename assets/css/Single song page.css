@@ -56,32 +56,42 @@ audio {
 
 #comment-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
 }
 
 #comment-text {
-    resize: none;
+    font-family: 'Poppins', sans-serif;
+    flex-grow: 1;
+    margin-right: 10px; /* Adjust spacing between text area and button */
+    /* Other styles remain unchanged */
+    border-radius: 10px; /* Adjust the px value to your preference for roundness */
     padding: 10px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    height: 100px;
+    text-align: left;
+}
+
+#comment-text::placeholder {
+    font-family: 'Poppins', sans-serif;
+    opacity: 0.5;
 }
 
 button {
     padding: 10px;
-    background-color: #007bff;
-    color: #fff;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #bbbbbb;
+}
+
+/* Add styles for the send icon */
+.send-icon {
+    display: block;
+    background-image: url(../pic/send-icon.png); /* Path to your send icon image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #comment-list {
