@@ -1,3 +1,39 @@
+<?php
+
+$is_invalid = false;
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
+    $mysqli = require __DIR__ . "/database.php";
+    
+    $sql = sprintf("SELECT * FROM user
+                    WHERE email = '%s'",
+                   $mysqli->real_escape_string($_POST["email"]));
+    
+    $result = $mysqli->query($sql);
+    
+    $user = $result->fetch_assoc();
+    
+    if ($user) {
+        
+        if (password_verify($_POST["password"], $user["password_hash"])) {
+            
+            session_start();
+            
+            session_regenerate_id();
+            
+            $_SESSION["user_id"] = $user["id"];
+            
+            header("Location: User.php");
+            exit;
+        }
+    }
+    
+    $is_invalid = true;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,25 +57,33 @@
             </div>
             <div id="signup-form" class="form-content">
                 <h2>Sign Up</h2>
-                <form>
-                    <label for="fullname">Full Name</label>
-                    <input type="text" id="fullname" placeholder="Your Name">
+                <form action="process_signup.php" method="post">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your Name">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="hello@gmail.com">
+                    <input type="email" id="email" name="email" placeholder="hello@gmail.com">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="********">
+                    <input type="password" id="password" name="password" placeholder="********">
+                    <label for="password_confirmation">Repeat password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********">
                     <button type="submit">Sign Up</button>
                 </form>
                 <p>Already a member? <a href="#" onclick="showLogin()">Log in</a></p>
             </div>
             <div id="login-form" class="form-content">
                 <h2>Log In</h2>
-                <form>
+
+                <?php if ($is_invalid): ?>
+                <em>Invalid login</em>
+                <?php endif; ?>
+
+                <form method="post">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="hello@gmail.com">
+                    <input type="email" id="email" placeholder="hello@gmail.com"
+                    value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="********">
-                    <button type="submit">Log In</button>
+                    <button>Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
             </div>

@@ -16,7 +16,7 @@
             </div>
             <p class="subtitle">Discover and enjoy music from the Ikun community. A place where artists share their unique sounds and creations with the world.</p>
             <div class="buttons-horizontal">
-                <a href="Login.html" class="btn get-started">Get Started</a>
+                <a href="Login.php" class="btn get-started">Get Started</a>
                 <div class="admin-section-horizontal">
                     <p class="admin-link">Are You An Admin?</p>
                     <a href="admin_login.html" class="btn">Click Here For Admin Login</a>
