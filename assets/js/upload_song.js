@@ -10,8 +10,10 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 
     if (songTitle && artist && categories && releaseDate && mp3Upload) {
         alert('Song uploaded successfully!');
-        // Add your form submission logic here
+        // Add logic to submit form via AJAX or standard submission
+        this.submit(); // Standard form submission
     } else {
         alert('Please fill all the required fields.');
     }
 });
+
