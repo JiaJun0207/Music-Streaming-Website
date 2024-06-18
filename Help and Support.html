@@ -44,6 +44,26 @@
             </ul>
         </div>
     </div>
-    <script src="assets/js/help_and_support.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            
+            fetch('assets/php/send_feedback.php', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+            .then(data => {
+                console.log(data); // Added for debugging
+                alert(data);
+                if (data.includes("Feedback sent successfully!")) {
+                    document.getElementById('contactForm').reset();
+                }
+            }).catch(error => {
+                console.error('Error:', error); // Added for debugging
+                alert('There was an error sending your feedback.');
+            });
+        });
+    </script>
 </body>
 </html>
