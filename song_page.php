@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Song Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/Montage_page.css">
+    <link rel="stylesheet" href="assets/css/song_page.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-A5+QoP0nbj8Z0I+AtSKv0Yynw6nshsRqV53wnb2pZl8/1Tl0Cpu6ALBTD2v1pUoVzbrmX1S5U9zF2VZ3RbFt9g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="container">
@@ -45,15 +46,14 @@
         // Close connection
         mysqli_close($conn);
         ?>
-
         <header>
-            <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Cover">
-            <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
-            <p><?php echo htmlspecialchars($song['artist']); ?></p>
-            <p><?php echo htmlspecialchars($song['categories']); ?></p>
+            <img src="<?php echo htmlspecialchars($song['profile_picture_upload']);?>" alt="Song Cover">
+            <h1><?php echo htmlspecialchars($song['song_title']);?></h1>
+            <p><?php echo htmlspecialchars($song['artist']);?></p>
+            <p><?php echo htmlspecialchars($song['categories']);?></p>
         </header>
         <main>
-            <audio controls>
+            <audio id="audio-player" controls>
                 <source src="<?php echo htmlspecialchars($song['mp3_upload']); ?>" type="audio/mp3">
                 Your browser does not support the audio element.
             </audio>
@@ -61,7 +61,9 @@
                 <h2>Comments</h2>
                 <form id="comment-form" method="POST">
                     <textarea id="comment-text" name="commentText" placeholder="Write a Comment..." required></textarea>
-                    <button type="submit" class="send-icon">Submit</button>
+                    <button type="submit" class="send-button">
+                        Submit
+                    </button>
                 </form>
                 <div id="comment-list">
                     <?php foreach ($comments as $comment) { ?>
@@ -74,5 +76,4 @@
             </section>
         </main>
     </div>
-</body>
 </html>
