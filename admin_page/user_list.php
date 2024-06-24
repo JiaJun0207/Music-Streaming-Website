@@ -1,16 +1,14 @@
 <?php
 session_start();
 
-
-
 // Include database connection
 $conn = require __DIR__ . "/../db_connection.php";
 
-// Initialize variables
+// Initialize variable to store users data
 $users = [];
 
 // Fetch user data
-$sql = "SELECT * FROM users";
+$sql = "SELECT user_id, name, email, phone, profile_image FROM users";
 $result = $conn->query($sql);
 
 // Check if query execution was successful
@@ -33,6 +31,19 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - User List</title>
     <link rel="stylesheet" href="list.css">
+    <style>
+        .profile-image {
+    max-width: 100%; 
+    max-height: 45px; 
+    width: auto; 
+    height: auto; 
+    display: block; 
+    margin-top: 10px; 
+    object-fit: contain; 
+    align-items: center;
+    object-fit: contain; 
+}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -63,6 +74,8 @@ $conn->close();
                         <th>ID</th>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Phone</th>
+                        <th>Profile Image</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -72,6 +85,14 @@ $conn->close();
                             <td><?php echo $user['user_id']; ?></td>
                             <td><?php echo $user['name']; ?></td>
                             <td><?php echo $user['email']; ?></td>
+                            <td><?php echo $user['phone']; ?></td>
+                            <td>
+                                <?php if (!empty($user['profile_image'])): ?>
+                                    <img src="<?php echo $user['profile_image']; ?>" alt="Profile Image" class="profile-image">
+                                <?php else: ?>
+                                    No image available
+                                <?php endif; ?>
+                            </td>
                             <td class="action-buttons">
                                 <button class="edit" onclick="editUser(<?php echo $user['user_id']; ?>)">✏️</button>
                                 <button class="delete" onclick="deleteUser(<?php echo $user['user_id']; ?>)">🗑️</button>
@@ -79,7 +100,7 @@ $conn->close();
                         </tr>
                     <?php endforeach; ?>
                     <?php if (empty($users)): ?>
-                        <tr><td colspan="4">No users found</td></tr>
+                        <tr><td colspan="6">No users found</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -87,8 +108,7 @@ $conn->close();
     </div>
     <script>
         function editUser(id) {
-            alert(`Edit user with ID: ${id}`);
-            // Implement edit functionality if needed
+            window.location.href = `edit_user.php?id=${id}`;
         }
 
         function deleteUser(id) {

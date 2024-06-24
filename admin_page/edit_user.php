@@ -4,16 +4,35 @@ session_start();
 // Include database connection
 $conn = require __DIR__ . "/../db_connection.php"; // Adjust the path to db_connection.php as needed
 
+// Check if user ID is provided
+if (!isset($_GET['id'])) {
+    // Handle error, redirect or show error message
+    exit("User ID not provided");
+}
+
+$user_id = $_GET['id'];
+
+// Fetch user data
+$sql = "SELECT * FROM users WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 1) {
+    $user = $result->fetch_assoc();
+} else {
+    exit("User not found");
+}
+
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialize variables to store form data
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
     $phone = $_POST['phone'];
-    $profile_image = ''; // Initialize profile image variable
 
-    // Handle profile image upload
+    // Check if a new profile image is uploaded
     if ($_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $image_name = $_FILES['profile_image']['name'];
         $temp_name = $_FILES['profile_image']['tmp_name'];
@@ -27,22 +46,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     } else {
-        echo "Profile image upload failed.";
-        exit();
+        $profile_image = $user['profile_image']; // Use existing profile image if no new one uploaded
     }
 
-    // Insert user data into database
-    $sql = "INSERT INTO users (name, email, password_hash, phone, profile_image) VALUES (?, ?, ?, ?, ?)";
+    // Update user data in database
+    $sql = "UPDATE users SET name=?, email=?, phone=?, profile_image=? WHERE user_id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $username, $email, $password, $phone, $profile_image);
+    $stmt->bind_param("ssssi", $username, $email, $phone, $profile_image, $user_id);
 
     if ($stmt->execute()) {
-        // User added successfully
-        header("Location: user_list.php"); // Redirect to user list page
+        // User updated successfully
+        header("Location: user_list.php");
         exit();
     } else {
-        // Error inserting user
-        echo "Failed to add user: " . $conn->error;
+        // Error updating user
+        echo "Failed to update user: " . $conn->error;
     }
 
     // Close statement and connection
@@ -56,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload a User</title>
+    <title>Edit User</title>
     <link rel="stylesheet" href="upload.css">
 </head>
 <body>
@@ -77,30 +95,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </aside>
         <main class="main-content">
-            <h1>Upload a User</h1>
-            <form id="uploadForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data">
+            <h1>Edit User</h1>
+            <form id="editForm" action="edit_user.php?id=<?php echo $user_id; ?>" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
                 <div class="form-group">
                     <label for="username">Username *</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" value="<?php echo $user['name']; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" value="<?php echo $user['email']; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number *</label>
-                    <input type="text" id="phone" name="phone" required>
+                    <input type="text" id="phone" name="phone" value="<?php echo $user['phone']; ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password *</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="profile_image">Profile Image</label>
+                    <input type="file" id="profile_image" name="profile_image" accept="image/*">
                 </div>
-                <div class="form-group">
-                    <label for="profile_image">Profile Image *</label>
-                    <input type="file" id="profile_image" name="profile_image" required accept="image/*">
-                </div>
-                
-                <button type="submit">Add User</button>
+                <button type="submit">Update User</button>
             </form>
         </main>
     </div>
