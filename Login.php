@@ -96,7 +96,7 @@
 
     <!-- OTP Popup -->
     <div id="otp-popup" class="otp-popup">
-        <h2>Enter OTP</h2>
+        <h2 style="color: black;">Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
             <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
             <button type="submit">Verify OTP</button>
