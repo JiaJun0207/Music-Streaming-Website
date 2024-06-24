@@ -66,18 +66,18 @@
                 <button id="login-btn" onclick="showLogin()">Log In</button>
             </div>
             <div id="signup-form" class="form-content">
-                <h2>Sign Up</h2>
-                <form id="signup-form" action="process_signup.php" method="post">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Your Name" required>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="hello@gmail.com" required>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="********" required>
-                    <label for="password_confirmation">Repeat password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
-                    <button type="button" onclick="sendOTP()">Send OTP</button>
-                </form>
+            <h2>Sign Up</h2>
+            <form id="signup-form" action="process_signup.php" method="post">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="hello@gmail.com" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="********" required>
+                <label for="password_confirmation">Repeat password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
+                <button type="button" onclick="sendOTP();">Send OTP</button>
+            </form>
                 <p>Already a member? <a href="#" onclick="showLogin()">Log in</a></p>
             </div>
             <div id="login-form" class="form-content">
@@ -99,7 +99,7 @@
         <h2>Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
             <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
-            <button type="submit">Verify OTP</button>
+            <button type="submit"><a href="#" onclick="showLogin()">Verify OTP</a></button>
         </form>
     </div>
 
@@ -119,37 +119,57 @@
         }
 
         function sendOTP() {
-            let email = document.getElementById('email').value;
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'send_otp.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert(xhr.responseText.trim()); // Alert message from send_otp.php
-                    document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
-                }
-            };
-            xhr.send('email=' + email);
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        let password_confirmation = document.getElementById('password_confirmation').value;
+        
+        // Validate inputs (simplified, add more validation as needed)
+        if (!name || !password || !password_confirmation) {
+            alert("All fields are required");
+            return;
         }
+        if (password !== password_confirmation) {
+            alert("Passwords must match");
+            return;
+        }
+        
+        
+        // AJAX request to process_signup.php for database insertion
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'process_signup.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Database insertion successful, now send OTP
+                    sendOTPToEmail(email);
+                } else {
+                    alert('Error: ' + xhr.responseText);
+                }
+            }
+        };
+        xhr.send('name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password));
+    }
 
-        function verifyOTP() {
-            let email = document.getElementById('email').value;
-            let otp = document.getElementById('otp-input').value;
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'verify_otp.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    if (xhr.responseText.trim() === 'OTP verified') {
-                        alert('OTP verified successfully. Redirecting to User Home.');
-                        window.location.href = 'User_Home.php'; // Redirect after successful OTP verification
-                    } else {
-                        alert('Invalid OTP. Please try again.');
-                    }
-                }
-            };
-            xhr.send('email=' + email + '&otp=' + otp);
-        }
+    function sendOTPToEmail(email) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'send_otp.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                alert(xhr.responseText.trim()); // Alert message from send_otp.php
+                document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+            }
+        };
+        xhr.send('email=' + encodeURIComponent(email));
+    }
+
+    function validateEmail(email) {
+        // Simplified email validation, adjust as per your requirements
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
     </script>
 </body>
 </html>
