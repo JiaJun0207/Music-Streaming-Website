@@ -4,13 +4,14 @@ USE ikun_music;
 DROP TABLE IF EXISTS Comments;
 DROP TABLE IF EXISTS Songs;
 
-CREATE TABLE users (
-    user_id INT  AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    PRIMARY KEY (user_id)
-);
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `profile_image` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ------------------------------------
 CREATE TABLE Songs (
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -41,3 +42,5 @@ FOREIGN KEY (song_id) REFERENCES Songs(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ADD COLUMN user_id INT(11),
 ADD CONSTRAINT fk_user_id
 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE users
+ADD otp VARCHAR(10) DEFAULT NULL;

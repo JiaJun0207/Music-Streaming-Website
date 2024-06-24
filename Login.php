@@ -96,7 +96,7 @@
 
     <!-- OTP Popup -->
     <div id="otp-popup" class="otp-popup">
-        <h2>Enter OTP</h2>
+        <h2 style="color: black;">Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
             <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
             <button type="submit"><a href="#" onclick="showLogin()">Verify OTP</a></button>
@@ -104,19 +104,19 @@
     </div>
 
     <script>
-        function showSignup() {
-            document.getElementById('signup-form').style.display = 'block';
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-btn').classList.add('active');
-            document.getElementById('login-btn').classList.remove('active');
-        }
+    function showSignup() {
+        document.getElementById('signup-form').style.display = 'block';
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-btn').classList.add('active');
+        document.getElementById('login-btn').classList.remove('active');
+    }
 
-        function showLogin() {
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('signup-btn').classList.remove('active');
-            document.getElementById('login-btn').classList.add('active');
-        }
+    function showLogin() {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('signup-btn').classList.remove('active');
+        document.getElementById('login-btn').classList.add('active');
+    }
 
         function sendOTP() {
         let name = document.getElementById('name').value;
