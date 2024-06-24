@@ -26,7 +26,7 @@
         }
 
         // Simulate user ID (in a real scenario, this should be fetched from the session)
-        $userID = 1; // For example purposes, replace with actual user ID
+        $userID = 7; // For example purposes, replace with actual user ID
 
         // Handle new comment submission
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['commentText'])) {
