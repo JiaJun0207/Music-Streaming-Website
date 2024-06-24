@@ -4,7 +4,7 @@ USE ikun_music;
 DROP TABLE IF EXISTS Comments;
 DROP TABLE IF EXISTS Songs;
 
-CREATE TABLE user (
+CREATE TABLE users (
     user_id INT  AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
