@@ -6,7 +6,6 @@
     <title>Song Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/song_page.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-A5+QoP0nbj8Z0I+AtSKv0Yynw6nshsRqV53wnb2pZl8/1Tl0Cpu6ALBTD2v1pUoVzbrmX1S5U9zF2VZ3RbFt9g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="container">
