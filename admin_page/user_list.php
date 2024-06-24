@@ -1,0 +1,115 @@
+<?php
+session_start();
+
+
+
+// Include database connection
+$conn = require __DIR__ . "/../db_connection.php";
+
+// Initialize variables
+$users = [];
+
+// Fetch user data
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+
+// Check if query execution was successful
+if ($result) {
+    // Fetch all rows as associative array
+    $users = $result->fetch_all(MYSQLI_ASSOC);
+} else {
+    // Query execution failed
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+// Close connection
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - User List</title>
+    <link rel="stylesheet" href="list.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="navbar">
+                <div class="navbar-logo">
+                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <span>IKUN MUSIC</span>
+                </div>
+                <div class="navbar-links-container">
+                    <a href="dashboard.html" class="navbar-link">Dashboard</a>
+                    <a href="song_list.html" class="navbar-link">Song List</a>
+                    <a href="artist_list.html" class="navbar-link">Artist</a>
+                    <a href="user_list.php" class="navbar-link">Users</a>
+                </div>
+                <a href="logout.php" class="logout">Logout</a> <!-- Replace with your logout page -->
+            </div>   
+        </aside>
+        <main class="main-content">
+            <header>
+                <input type="text" name="search" placeholder="Artist, Album, Song, etc...">
+            </header>
+            <h1>User List</h1>
+            <button id="addNewBtn">Add New</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userList">
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?php echo $user['user_id']; ?></td>
+                            <td><?php echo $user['name']; ?></td>
+                            <td><?php echo $user['email']; ?></td>
+                            <td class="action-buttons">
+                                <button class="edit" onclick="editUser(<?php echo $user['user_id']; ?>)">✏️</button>
+                                <button class="delete" onclick="deleteUser(<?php echo $user['user_id']; ?>)">🗑️</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($users)): ?>
+                        <tr><td colspan="4">No users found</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </main>
+    </div>
+    <script>
+        function editUser(id) {
+            alert(`Edit user with ID: ${id}`);
+            // Implement edit functionality if needed
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch(`/api/users/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('User deleted successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Failed to delete user.');
+                    }
+                });
+            }
+        }
+
+        document.getElementById('addNewBtn').addEventListener('click', function() {
+            window.location.href = 'upload_user.php'; // Navigate to the upload user page
+        });
+    </script>
+</body>
+</html>
