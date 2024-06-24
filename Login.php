@@ -44,6 +44,51 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <script src="/js/validation.js" defer></script>
+    <style>
+        /* Style for OTP Popup */
+        .otp-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 1000;
+        }
+        .otp-popup h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .otp-popup input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .otp-popup button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #6912db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .otp-popup button:hover {
+            background-color: #b991ec;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -58,38 +103,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
             <div id="signup-form" class="form-content">
                 <h2>Sign Up</h2>
-                <form action="process_signup.php" method="post">
+                <form id="signup-form" action="process_signup.php" method="post">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Your Name">
+                    <input type="text" id="name" name="name" placeholder="Your Name" required>
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="hello@gmail.com">
+                    <input type="email" id="email" name="email" placeholder="hello@gmail.com" required>
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="********">
+                    <input type="password" id="password" name="password" placeholder="********" required>
                     <label for="password_confirmation">Repeat password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********">
-                    <button type="submit">Sign Up</button>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
+                    <button type="button" onclick="sendOTP()">Send OTP</button>
                 </form>
                 <p>Already a member? <a href="#" onclick="showLogin()">Log in</a></p>
             </div>
             <div id="login-form" class="form-content">
                 <h2>Log In</h2>
-
-                <?php if ($is_invalid): ?>
-                <em>Invalid login</em>
-                <?php endif; ?>
-
-                <form method="post">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="hello@gmail.com"
-                    value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="********">
+                <form action="process_login.php" method="post">
+                    <label for="login_email">Email</label>
+                    <input type="email" id="login_email" name="email" placeholder="hello@gmail.com" required>
+                    <label for="login_password">Password</label>
+                    <input type="password" id="login_password" name="password" placeholder="********" required>
                     <button type="submit">Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
             </div>
         </div>
     </div>
+
+    <!-- OTP Popup -->
+    <div id="otp-popup" class="otp-popup">
+        <h2>Enter OTP</h2>
+        <form id="otp-form" onsubmit="verifyOTP(); return false;">
+            <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
+            <button type="submit">Verify OTP</button>
+        </form>
+    </div>
+
     <script>
         function showSignup() {
             document.getElementById('signup-form').style.display = 'block';
@@ -105,8 +154,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             document.getElementById('login-btn').classList.add('active');
         }
 
-        window.onload = function() {
-            showLogin();
+        function sendOTP() {
+            let email = document.getElementById('email').value;
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'send_otp.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert(xhr.responseText.trim()); // Alert message from send_otp.php
+                    document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+                }
+            };
+            xhr.send('email=' + email);
+        }
+
+        function verifyOTP() {
+            let email = document.getElementById('email').value;
+            let otp = document.getElementById('otp-input').value;
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'verify_otp.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (xhr.responseText.trim() === 'OTP verified') {
+                        alert('OTP verified successfully. Redirecting to User Home.');
+                        window.location.href = 'User_Home.php'; // Redirect after successful OTP verification
+                    } else {
+                        alert('Invalid OTP. Please try again.');
+                    }
+                }
+            };
+            xhr.send('email=' + email + '&otp=' + otp);
         }
     </script>
 </body>
