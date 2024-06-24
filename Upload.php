@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert query
     $sql = "INSERT INTO Songs (song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload)
             VALUES ('$songTitle', '$artist', '$language', '$categories', '$releaseDate', '$mp3Upload_dest', '$profilePictureUpload_dest', '$backgroundPictureUpload_dest')";
-
+    
     if (mysqli_query($conn, $sql)) {
         echo "Song added successfully.";
         

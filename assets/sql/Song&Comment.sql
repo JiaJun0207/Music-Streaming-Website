@@ -31,7 +31,8 @@ CREATE TABLE Comments (
     comment_text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    INDEX idx_song_id (song_id)
+    INDEX idx_song_id (song_id),
+    INDEX fk_user_id (user_id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ---------------------------------------
 ALTER TABLE Comments

@@ -25,10 +25,13 @@
             exit;
         }
 
+        // Simulate user ID (in a real scenario, this should be fetched from the session)
+        $userID = 1; // For example purposes, replace with actual user ID
+
         // Handle new comment submission
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['commentText'])) {
             $commentText = $_POST['commentText'];
-            $result = addComment($conn, $songID, $commentText);
+            $result = addComment($conn, $songID, $userID, $commentText);
 
             if ($result) {
                 // Redirect to avoid resubmission on refresh
@@ -67,7 +70,7 @@
                 <div id="comment-list">
                     <?php foreach ($comments as $comment) { ?>
                         <div class="comment">
-                            <p><?php echo htmlspecialchars($comment['comment_text']); ?></p>
+                            <p><strong><?php echo htmlspecialchars($comment['name']); ?>:</strong> <?php echo htmlspecialchars($comment['comment_text']); ?></p>
                             <small><?php echo htmlspecialchars($comment['created_at']); ?></small>
                         </div>
                     <?php } ?>
@@ -75,4 +78,5 @@
             </section>
         </main>
     </div>
+</body>
 </html>
