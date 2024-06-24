@@ -14,15 +14,15 @@ if ($_POST["password"] !== $_POST["password_confirmation"]) {
 
 $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-$mysqli = require __DIR__ . "/db_connection.php";
+$conn = require __DIR__ . "/db_connection.php";
 
-$sql = "INSERT INTO user (name, email, password_hash)
+$sql = "INSERT INTO users (name, email, password_hash)
         VALUES (?, ?, ?)";
         
-$stmt = $mysqli->stmt_init();
+$stmt = $conn->stmt_init();
 
 if ( ! $stmt->prepare($sql)) {
-    die("SQL error: " . $mysqli->error);
+    die("SQL error: " . $conn->error);
 }
 
 $stmt->bind_param("sss",
@@ -37,9 +37,9 @@ if ($stmt->execute()) {
     
 } else {
     
-    if ($mysqli->errno === 1062) {
+    if ($conn->errno === 1062) {
         die("email already taken");
     } else {
-        die($mysqli->error . " " . $mysqli->errno);
+        die($conn->error . " " . $conn->errno);
     }
 }

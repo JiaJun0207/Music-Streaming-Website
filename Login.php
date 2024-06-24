@@ -4,13 +4,13 @@ $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
-    $mysqli = require __DIR__ . "/db_connection.php";
+    $conn = require __DIR__ . "/db_connection.php";
     
-    $sql = sprintf("SELECT * FROM user
+    $sql = sprintf("SELECT * FROM users
                     WHERE email = '%s'",
-                   $mysqli->real_escape_string($_POST["email"]));
+                   $conn->real_escape_string($_POST["email"]));
     
-    $result = $mysqli->query($sql);
+    $result = $conn->query($sql);
     
     $user = $result->fetch_assoc();
     
@@ -43,11 +43,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="/js/validation.js" defer></script>
 </head>
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="assets\pic\Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="logo-image">
+            <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="logo-image">
             <span style="color: black;">IKUN MUSIC</span>
         </div>
         <div class="form-container">
@@ -79,11 +80,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <form method="post">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="hello@gmail.com"
+                    <input type="email" id="email" name="email" placeholder="hello@gmail.com"
                     value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="********">
-                    <button>Log In</button>
+                    <input type="password" id="password" name="password" placeholder="********">
+                    <button type="submit">Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
             </div>

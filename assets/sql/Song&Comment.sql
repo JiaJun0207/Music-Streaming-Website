@@ -1,8 +1,16 @@
-ikun_music
-
+CREATE DATABASE ikun_music;
+USE ikun_music;
 
 DROP TABLE IF EXISTS Comments;
 DROP TABLE IF EXISTS Songs;
+
+CREATE TABLE user (
+    user_id INT  AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
 ------------------------------------
 CREATE TABLE Songs (
     id INT(11) NOT NULL AUTO_INCREMENT,

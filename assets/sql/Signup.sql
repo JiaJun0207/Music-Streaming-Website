@@ -1,10 +1,10 @@
-CREATE DATABASE login_db;
-USE login_db;
+CREATE DATABASE ikun_music;
+USE ikun_music;
 
 CREATE TABLE user (
-    id INT  AUTO_INCREMENT,
+    user_id INT  AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (user_id)
 );
