@@ -9,8 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialize variables to store form data
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $password = $_POST['password'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
 
     // You may need additional validation and sanitization of input fields
 
@@ -21,12 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         // User added successfully
-        echo json_encode(array("message" => "User added successfully"));
+        header("Location: user_list.php"); // Redirect to user list page
+        exit();
     } else {
         // Error inserting user
         echo json_encode(array("error" => "Failed to add user: " . $conn->error));
     }
-
+    
     // Close statement and connection
     $stmt->close();
     $conn->close();
@@ -34,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit(); // Stop further execution
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,15 +47,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image"><span>IKUN MUSIC</span>
+                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="" class="navbar-link"> Dashboard</a>
-                    <a href="song_list.html" class="navbar-link"> Song List</a>
-                    <a href="#" class="navbar-link"> Artist</a>
-                    <a href="user_list.php" class="navbar-link"> Users</a> <!-- Update to PHP file -->
+                    <a href="#" class="navbar-link">Dashboard</a>
+                    <a href="song_list.html" class="navbar-link">Song List</a>
+                    <a href="#" class="navbar-link">Artist</a>
+                    <a href="user_list.php" class="navbar-link">Users</a> <!-- Update to PHP file -->
                 </div>
-                <a href="#" class="logout">Logout</a>
+                <a href="#" class="logout">Logout</a> <!-- Update logout link as per your implementation -->
             </div>
         </aside>
         <main class="main-content">
@@ -67,16 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="image">Image *</label>
-                    <input type="file" id="image" name="image" >
-                </div>
-                <div class="form-group">
                     <label for="email">Email *</label>
                     <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="number" id="phone" name="phone" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password *</label>
@@ -87,6 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
         </main>
     </div>
-    <script src="upload_user.js"></script>
+   
 </body>
 </html>
