@@ -3,33 +3,31 @@
 $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
-    $mysqli = require __DIR__ . "/database.php";
-    
-    $sql = sprintf("SELECT * FROM user
-                    WHERE email = '%s'",
-                   $mysqli->real_escape_string($_POST["email"]));
-    
-    $result = $mysqli->query($sql);
-    
-    $user = $result->fetch_assoc();
-    
-    if ($user) {
-        
-        if (password_verify($_POST["password"], $user["password_hash"])) {
-            
-            session_start();
-            
-            session_regenerate_id();
-            
-            $_SESSION["user_id"] = $user["id"];
-            
-            header("Location: User_Home.php");
-            exit;
+
+    if (isset($_POST["email"]) && isset($_POST["password"])) {
+        $mysqli = require __DIR__ . "/db_connection.php";
+
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param("s", $_POST["email"]);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+
+        if ($user) {
+            if (password_verify($_POST["password"], $user["password_hash"])) {
+                session_start();
+                session_regenerate_id();
+                $_SESSION["user_id"] = $user["id"];
+                header("Location: User_Home.php");
+                exit;
+            }
         }
+
+        $is_invalid = true;
+    } else {
+        $is_invalid = true;
     }
-    
-    $is_invalid = true;
 }
 
 ?>
@@ -43,11 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="/js/validation.js" defer></script>
 </head>
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="assets\pic\Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="logo-image">
+            <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="logo-image">
             <span style="color: black;">IKUN MUSIC</span>
         </div>
         <div class="form-container">
@@ -79,11 +78,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <form method="post">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="hello@gmail.com"
+                    <input type="email" id="email" name="email" placeholder="hello@gmail.com"
                     value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="********">
-                    <button>Log In</button>
+                    <input type="password" id="password" name="password" placeholder="********">
+                    <button type="submit">Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
             </div>
