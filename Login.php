@@ -3,31 +3,33 @@
 $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    if (isset($_POST["email"]) && isset($_POST["password"])) {
-        $mysqli = require __DIR__ . "/db_connection.php";
-
-        $sql = "SELECT * FROM user WHERE email = ?";
-        $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param("s", $_POST["email"]);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-
-        if ($user) {
-            if (password_verify($_POST["password"], $user["password_hash"])) {
-                session_start();
-                session_regenerate_id();
-                $_SESSION["user_id"] = $user["id"];
-                header("Location: User_Home.php");
-                exit;
-            }
+    
+    $mysqli = require __DIR__ . "/db_connection.php";
+    
+    $sql = sprintf("SELECT * FROM user
+                    WHERE email = '%s'",
+                   $mysqli->real_escape_string($_POST["email"]));
+    
+    $result = $mysqli->query($sql);
+    
+    $user = $result->fetch_assoc();
+    
+    if ($user) {
+        
+        if (password_verify($_POST["password"], $user["password_hash"])) {
+            
+            session_start();
+            
+            session_regenerate_id();
+            
+            $_SESSION["user_id"] = $user["id"];
+            
+            header("Location: User_Home.php");
+            exit;
         }
-
-        $is_invalid = true;
-    } else {
-        $is_invalid = true;
     }
+    
+    $is_invalid = true;
 }
 
 ?>
