@@ -21,7 +21,7 @@ function fetchSongDetails($conn, $songID) {
 // Function to fetch comments for a song
 function fetchComments($conn, $songID) {
     $comments = [];
-    $commentsQuery = "SELECT * FROM Comments WHERE song_id = $songID ORDER BY created_at DESC";
+    $commentsQuery = "SELECT c.*, u.name FROM Comments c JOIN users u ON c.user_id = u.user_id WHERE song_id = $songID ORDER BY created_at DESC";
     $commentsResult = mysqli_query($conn, $commentsQuery);
 
     if ($commentsResult) {
@@ -34,10 +34,10 @@ function fetchComments($conn, $songID) {
 }
 
 // Handle new comment submission
-function addComment($conn, $songID, $commentText) {
+function addComment($conn, $songID, $userID, $commentText) {
     $commentText = mysqli_real_escape_string($conn, $commentText);
-    $insertCommentQuery = "INSERT INTO Comments (song_id, comment_text) VALUES ($songID, '$commentText')";
-    $result = mysqli_query($conn, $insertCommentQuery);
+    $insertCommentQuery = "INSERT INTO Comments (song_id, user_id, comment_text) VALUES ($songID, $userID, '$commentText')";
+    $result = mysqli_query($conn, $insertCommentQuery); 
 
     return $result;
 }
