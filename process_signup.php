@@ -16,7 +16,7 @@ $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
 $conn = require __DIR__ . "/db_connection.php";
 
-$sql = "INSERT INTO users (name, email, password_hash)
+$sql = "INSERT INTO users (name, email, password_hash, otp)
         VALUES (?, ?, ?)";
         
 $stmt = $conn->stmt_init();
