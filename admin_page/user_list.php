@@ -113,19 +113,22 @@ $conn->close();
 
         function deleteUser(id) {
             if (confirm('Are you sure you want to delete this user?')) {
-                fetch(`/api/users/${id}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('User deleted successfully!');
+                // Send AJAX request to delete user
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'delete_user.php', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Refresh the page after deletion
                         window.location.reload();
                     } else {
-                        alert('Failed to delete user.');
+                        alert('Failed to delete user. Please try again.');
                     }
-                });
+                };
+                xhr.send('user_id=' + id);
             }
-        }
+        
+    }
 
         document.getElementById('addNewBtn').addEventListener('click', function() {
             window.location.href = 'upload_user.php'; // Navigate to the upload user page
