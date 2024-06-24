@@ -96,7 +96,7 @@
 
     <!-- OTP Popup -->
     <div id="otp-popup" class="otp-popup">
-        <h2>Enter OTP</h2>
+        <h2 style="color: black;">Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
             <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
             <button type="submit">Verify OTP</button>
@@ -104,52 +104,52 @@
     </div>
 
     <script>
-        function showSignup() {
-            document.getElementById('signup-form').style.display = 'block';
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-btn').classList.add('active');
-            document.getElementById('login-btn').classList.remove('active');
-        }
+    function showSignup() {
+        document.getElementById('signup-form').style.display = 'block';
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-btn').classList.add('active');
+        document.getElementById('login-btn').classList.remove('active');
+    }
 
-        function showLogin() {
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('signup-btn').classList.remove('active');
-            document.getElementById('login-btn').classList.add('active');
-        }
+    function showLogin() {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('signup-btn').classList.remove('active');
+        document.getElementById('login-btn').classList.add('active');
+    }
 
-        function sendOTP() {
-            let email = document.getElementById('email').value;
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'send_otp.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert(xhr.responseText.trim()); // Alert message from send_otp.php
-                    document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+    function sendOTP() {
+        let email = document.getElementById('email').value;
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'send_otp.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                alert(xhr.responseText.trim()); // Alert message from send_otp.php
+                document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+            }
+        };
+        xhr.send('email=' + email);
+    }
+
+    function verifyOTP() {
+        let email = document.getElementById('email').value;
+        let otp = document.getElementById('otp-input').value;
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'verify_otp.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                if (xhr.responseText.trim() === 'OTP verified') {
+                    alert('OTP verified successfully. Redirecting to Login.');
+                    window.location.href = 'login.php'; // Redirect after successful OTP verification
+                } else {
+                    alert('Invalid OTP. Please try again.');
                 }
-            };
-            xhr.send('email=' + email);
-        }
-
-        function verifyOTP() {
-            let email = document.getElementById('email').value;
-            let otp = document.getElementById('otp-input').value;
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'verify_otp.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    if (xhr.responseText.trim() === 'OTP verified') {
-                        alert('OTP verified successfully. Redirecting to User Home.');
-                        window.location.href = 'User_Home.php'; // Redirect after successful OTP verification
-                    } else {
-                        alert('Invalid OTP. Please try again.');
-                    }
-                }
-            };
-            xhr.send('email=' + email + '&otp=' + otp);
-        }
-    </script>
+            }
+        };
+        xhr.send('email=' + email + '&otp=' + otp);
+    }
+</script>
 </body>
 </html>

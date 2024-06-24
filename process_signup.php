@@ -16,7 +16,7 @@ $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
 $conn = require __DIR__ . "/db_connection.php";
 
-$sql = "INSERT INTO users (name, email, password_hash)
+$sql = "INSERT INTO users (name, email, password_hash, otp)
         VALUES (?, ?, ?)";
         
 $stmt = $conn->stmt_init();
@@ -31,15 +31,15 @@ $stmt->bind_param("sss",
                   $password_hash);
                   
 if ($stmt->execute()) {
-
-    header("Location: signup-success.html");
+    header("Location: login.php"); // Redirect to login page after signup
     exit;
     
 } else {
     
     if ($conn->errno === 1062) {
-        die("email already taken");
+        die("Email already taken");
     } else {
         die($conn->error . " " . $conn->errno);
     }
 }
+?>
