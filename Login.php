@@ -99,7 +99,7 @@
         <h2 style="color: black;">Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
             <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
-            <button type="submit"><a href="#" onclick="showLogin()">Verify OTP</a></button>
+            <button type="submit" onclick="showLogin()">Verify OTP</button>
         </form>
     </div>
 
