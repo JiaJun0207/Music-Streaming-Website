@@ -55,8 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['email'])) {
         $mail->send();
         echo 'OTP sent successfully to ' . $email;
 
-        
-
         } catch (Exception $e) {
                 echo "OTP could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
