@@ -1,3 +1,43 @@
+<?php
+// Include database connection and song.php script
+include 'db_connection.php';
+include 'song.php';
+
+// Get song ID from URL parameter
+$songID = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Fetch song details
+$song = fetchSongDetails($conn, $songID);
+
+if (!$song) {
+    header("Location: error.php"); // Redirect to an error page
+    exit;
+}
+
+// Simulate user ID (in a real scenario, this should be fetched from the session)
+$userID = 1; // For example purposes, replace with actual user ID
+
+// Handle new comment submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['commentText'])) {
+    $commentText = $_POST['commentText'];
+    $result = addComment($conn, $songID, $userID, $commentText);
+
+    if ($result) {
+        // Redirect to avoid resubmission on refresh
+        header("Location: {$_SERVER['REQUEST_URI']}");
+        exit;
+    } else {
+        $error = "Error adding comment.";
+    }
+}
+
+// Fetch comments for the song
+$comments = fetchComments($conn, $songID);
+
+// Close connection
+mysqli_close($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,45 +49,6 @@
 </head>
 <body>
     <div class="container">
-        <?php
-        // Include database connection and song.php script
-        include 'db_connection.php';
-        include 'song.php';
-
-        // Get song ID from URL parameter
-        $songID = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
-        // Fetch song details
-        $song = fetchSongDetails($conn, $songID);
-
-        if (!$song) {
-            echo "<h1>Song not found!</h1>";
-            exit;
-        }
-
-        // Simulate user ID (in a real scenario, this should be fetched from the session)
-        $userID = 1; // For example purposes, replace with actual user ID
-
-        // Handle new comment submission
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['commentText'])) {
-            $commentText = $_POST['commentText'];
-            $result = addComment($conn, $songID, $userID, $commentText);
-
-            if ($result) {
-                // Redirect to avoid resubmission on refresh
-                header("Location: {$_SERVER['REQUEST_URI']}");
-                exit;
-            } else {
-                echo "<p>Error adding comment.</p>";
-            }
-        }
-
-        // Fetch comments for the song
-        $comments = fetchComments($conn, $songID);
-
-        // Close connection
-        mysqli_close($conn);
-        ?>
         <header>
             <img src="<?php echo htmlspecialchars($song['profile_picture_upload']);?>" alt="Song Cover">
             <h1><?php echo htmlspecialchars($song['song_title']);?></h1>
@@ -75,6 +76,9 @@
                         </div>
                     <?php } ?>
                 </div>
+                <?php if (isset($error)) { ?>
+                    <p><?php echo $error; ?></p>
+                <?php } ?>
             </section>
         </main>
     </div>
