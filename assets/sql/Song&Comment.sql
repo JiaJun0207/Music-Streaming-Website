@@ -29,11 +29,13 @@ CREATE TABLE Songs (
 CREATE TABLE Comments (
     id INT(11) NOT NULL AUTO_INCREMENT,
     song_id INT(11) NOT NULL,
+    user_id INT(11) NOT NULL,  -- Add the user_id column
     comment_text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     INDEX idx_song_id (song_id),
-    INDEX fk_user_id (user_id),
+    INDEX idx_user_id (user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)  -- Define the foreign key constraint
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ---------------------------------------
 ALTER TABLE Comments
