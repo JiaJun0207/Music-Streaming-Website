@@ -42,7 +42,7 @@
             padding: 10px;
             font-size: 1em;
             font-weight: bold;
-            color: #fff;
+            color: black;
             background-color: #6912db;
             border: none;
             border-radius: 5px;
@@ -118,37 +118,37 @@
         document.getElementById('login-btn').classList.add('active');
     }
 
-        function sendOTP() {
-        let name = document.getElementById('name').value;
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
-        let password_confirmation = document.getElementById('password_confirmation').value;
+    function sendOTP() {
+    let name = document.getElementById('name').value;
+    let email = document.getElementById('email').value;
+    let password = document.getElementById('password').value;
+    let password_confirmation = document.getElementById('password_confirmation').value;
+    
+    // Validate inputs (simplified, add more validation as needed)
+    if (!name || !password || !password_confirmation) {
+        alert("All fields are required");
+        return;
+    }
+    if (password !== password_confirmation) {
+        alert("Passwords must match");
+        return;
+    }
+    
         
-        // Validate inputs (simplified, add more validation as needed)
-        if (!name || !password || !password_confirmation) {
-            alert("All fields are required");
-            return;
-        }
-        if (password !== password_confirmation) {
-            alert("Passwords must match");
-            return;
-        }
-        
-        
-        // AJAX request to process_signup.php for database insertion
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'process_signup.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    // Database insertion successful, now send OTP
-                    sendOTPToEmail(email);
-                } else {
-                    alert('Error: ' + xhr.responseText);
+    // AJAX request to process_signup.php for database insertion
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', 'process_signup.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+            // Database insertion successful, now send OTP
+            sendOTPToEmail(email);
+            } else {
+            alert('Error: ' + xhr.responseText);
+                    }
                 }
-            }
-        };
+            };
         xhr.send('name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password));
     }
 
