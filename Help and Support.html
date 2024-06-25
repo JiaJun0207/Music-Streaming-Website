@@ -51,7 +51,7 @@
             event.preventDefault();
             var formData = new FormData(this);
             
-            fetch('assets/php/send_feedback.php', {
+            fetch('send_feedback.php', {
                 method: 'POST',
                 body: formData
             }).then(response => response.text())
