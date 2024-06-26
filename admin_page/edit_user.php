@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" value="<?php echo $user['email']; ?>" required>
+                    <input type="email" id="email" name="email" value="<?php echo $user['email']; ?>" readonly>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number *</label>
