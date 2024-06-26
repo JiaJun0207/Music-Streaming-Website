@@ -59,7 +59,7 @@ $conn->close();
                     <a href="artist_list.html" class="navbar-link">Artist</a>
                     <a href="user_list.php" class="navbar-link">Users</a>
                 </div>
-                <a href="logout.php" class="logout">Logout</a> <!-- Replace with your logout page -->
+                <a href="../index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
             </div>   
         </aside>
         <main class="main-content">
