@@ -50,7 +50,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['email'])) {
         // Content
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP for IKUN MUSIC';
-        $mail->Body    = 'Your OTP is: ' . $otp;
+        $mail->Body =   'Dear Mr/Ms,
+                        <br>
+                        <br>
+                        Your OTP Code is: <b>'. $otp. '</b>
+                        <br>
+                        <br>
+                        Thank you for choosing Ikun Music. 
+                        <br>
+                        <br>
+                        This OTP is valid for a limited time only. Please enter it on our website to complete your registration.
+                        <br>
+                        <br>
+                        <img src= "cid:ikunmusicgif">
+                        <br>
+                        <br>
+                        Cheers,
+                        <br>
+                        <br>
+                        The Ikun Music Team';
+
+        $mail->AddEmbeddedImage('assets/gif/jinitaimei.gif', 'ikunmusicgif', 'ikunmusicgif.gif');             
 
         $mail->send();
         echo 'OTP sent successfully to ' . $email;
