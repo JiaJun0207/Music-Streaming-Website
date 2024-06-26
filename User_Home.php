@@ -1,19 +1,17 @@
 <?php
-
 session_start();
 
 if (isset($_SESSION["user_id"])) {
-    
     $conn = require __DIR__ . "/db_connection.php";
     
-    $sql = "SELECT * FROM users
-            WHERE user_id = {$_SESSION["user_id"]}";
-            
-    $result = $conn->query($sql);
-    
-    $user = $result->fetch_assoc();
+    $sql = "SELECT name, profile_image FROM users WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION["user_id"]);
+    $stmt->execute();
+    $stmt->bind_result($name, $profile_image);
+    $stmt->fetch();
+    $stmt->close();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +40,8 @@ if (isset($_SESSION["user_id"])) {
             <a href="#" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
         </div>
         <div class="navbar-user">
-            <img src="assets/pic/shuaige.jpg" alt="User Image">
-            <span><a href="User_Profile.html" class="profile-link">Melvin Siaw</a></span>
+            <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
+            <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
         </div>
     </div>
     <div class="main-content">
@@ -77,7 +75,7 @@ if (isset($_SESSION["user_id"])) {
                         <a href="#" class="see-details">See Details</a>
                     </div>
                     <div class="album">
-                        <img src="assets\pic\ermm.jpg" alt="Album Image">
+                        <img src="assets/pic/ermm.jpg" alt="Album Image">
                         <span>Yael Amari</span>
                         <span>2 Albums</span>
                         <a href="#" class="see-details">See Details</a>
@@ -95,7 +93,7 @@ if (isset($_SESSION["user_id"])) {
                         <a href="#" class="see-details">See Details</a>
                     </div>
                     <div class="album">
-                        <img src="assets\pic\bruh.jpg" alt="Album Image">
+                        <img src="assets/pic/bruh.jpg" alt="Album Image">
                         <span>Larana Group</span>
                         <span>3 Albums</span>
                         <a href="#" class="see-details">See Details</a>
