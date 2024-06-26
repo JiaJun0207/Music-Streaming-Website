@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    $conn = require __DIR__ . "/db_connection.php";
+    
+    $sql = "SELECT name, profile_image FROM users WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION["user_id"]);
+    $stmt->execute();
+    $stmt->bind_result($name, $profile_image);
+    $stmt->fetch();
+    $stmt->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +42,8 @@
                     <a href="Help and Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
                 </div>
                 <div class="navbar-user">
-                    <img src="assets/pic/shuaige.jpg" alt="User Image">
-                    <span><a href="User_Home.html" class="profile-link">Melvin Siaw</a></span>
+                    <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
+                    <span><a href="User_Home.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
                 </div>
             </div>
         </aside>
