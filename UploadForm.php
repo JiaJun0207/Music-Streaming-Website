@@ -43,7 +43,7 @@ if (isset($_SESSION["user_id"])) {
                 </div>
                 <div class="navbar-user">
                     <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
-                    <span><a href="User_Home.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
+                    <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
                 </div>
             </div>
         </aside>

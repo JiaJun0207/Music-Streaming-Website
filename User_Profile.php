@@ -163,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="navbar-user">
                     <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
-                    <span><a href="User_Home.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
+                    <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
                 </div>
             </div>
         </aside>
@@ -190,6 +190,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="name">Name:</label>
                 <br>
                 <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>">
+                <br>
+                <label for="email">Email: (Read-Only)</label>
+                <br>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email) ?>" readonly>
                 <br>
                 <label for="phone">Phone Number:</label>
                 <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>">
