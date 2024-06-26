@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .modal-form input[type="text"],
         .modal-form input[type="email"],
         .modal-form input[type="file"] {
-            width: 100%;
+            width: 80%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
@@ -188,14 +188,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span class="close">&times;</span>
             <form class="modal-form" action="User_Profile.php" method="post" enctype="multipart/form-data">
                 <label for="name">Name:</label>
+                <br>
                 <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>">
-                
+                <br>
                 <label for="phone">Phone Number:</label>
                 <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>">
-                
+                <br>
                 <label for="profile_image">Profile Picture:</label>
                 <input type="file" id="profile_image" name="profile_image">
-                
+                <br>
                 <button type="submit">Save Changes</button>
             </form>
         </div>
