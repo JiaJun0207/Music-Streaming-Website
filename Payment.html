@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    #BHbtn {
+        background-color: #6c63ff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: Poppins, sans-serif;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,9 +73,16 @@
                         <input type="text" placeholder="CVC">
                         <button type="submit">PAY</button>
                     </form>
+                    
                 </div>
+                <button id="BHbtn">Back To Home</button>
             </div>
         </div>
     </div>
 </body>
+<script>
+    document.getElementById('BHbtn').addEventListener('click', function() {
+        window.location.href = 'User_Home.php';
+    });
+</script>
 </html>

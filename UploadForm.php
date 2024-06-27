@@ -32,14 +32,12 @@ if (isset($_SESSION["user_id"])) {
                     <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image"><span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="User_Home.html" class="navbar-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-search"></i> Discover</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-user"></i> My Profile</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-cog"></i> Settings</a>
-                    <a href="Help and Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
+                <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
+                <a href="#" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
+                <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
+                <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
+                <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
+                <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
                 </div>
                 <div class="navbar-user">
                     <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
