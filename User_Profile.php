@@ -155,6 +155,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .modal-form button:hover {
             background-color: #472dbe;
         }
+        
+        /* Add this to your CSS file */
+        #logout {
+            color: #ffffff; /* Default color */
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        #logout:hover {
+            color: #ff0000; /* Red color on hover */
+        }
+        #logout:hover .fas {
+            color: #ff0000; /* Red color for the icon on hover */
+        }
     </style>
 </head>
 <body>
@@ -171,6 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
                     <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
                     <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
+                    <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
                 <div class="navbar-user">
                     <img src="<?php echo htmlspecialchars($image_path); ?>" alt="User Image">
