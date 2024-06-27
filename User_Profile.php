@@ -157,6 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
                     <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
                     <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
+                    <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
                 </div>
                 <div class="navbar-user">
                     <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
