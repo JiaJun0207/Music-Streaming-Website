@@ -1,78 +1,57 @@
-CREATE TABLE user (
-    user_ID INT AUTO_INCREMENT PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL,
-    user_email VARCHAR(150) NOT NULL,
-    user_phone_num VARCHAR(10) NOT NULL,
-    user_profile_photo VARCHAR(350),
-    user_password VARCHAR(150) NOT NULL,
-    user_detail VARCHAR(350),
-    coin_amount INT(11) NOT NULL
-);
+CREATE DATABASE ikun_music;
+USE ikun_music;
 
-CREATE TABLE song (
-    song_ID INT AUTO_INCREMENT PRIMARY KEY,
-    artist_ID INT,
-    comment_ID INT,
-    donate_ID INT,
-    user_ID INT,
-    song_name VARCHAR(100) NOT NULL,
-    youtube_link VARCHAR(350),
-    song_photo VARCHAR(350),
-    song_created VARCHAR(350),
-    FOREIGN KEY (artist_ID) REFERENCES artist(artist_ID),
-    FOREIGN KEY (comment_ID) REFERENCES comment(comment_ID),
-    FOREIGN KEY (donate_ID) REFERENCES donate(donate_ID),
-    FOREIGN KEY (user_ID) REFERENCES user(user_ID)
-);
+DROP TABLE IF EXISTS Comments;
+DROP TABLE IF EXISTS Songs;
 
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `profile_image` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+------------------------------------
+CREATE TABLE Songs (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    song_title VARCHAR(255) NOT NULL,
+    artist VARCHAR(255) NOT NULL,
+    language VARCHAR(255),
+    categories VARCHAR(255),
+    release_date DATE,
+    mp3_upload VARCHAR(255),
+    profile_picture_upload VARCHAR(255),
+    background_picture_upload VARCHAR(255),
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-------------------------------------
+CREATE TABLE Comments (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    song_id INT(11) NOT NULL,
+    user_id INT(11) NOT NULL,  -- Add the user_id column
+    comment_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    INDEX idx_song_id (song_id),
+    INDEX idx_user_id (user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)  -- Define the foreign key constraint
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+---------------------------------------
 CREATE TABLE artist (
-    artist_ID INT AUTO_INCREMENT PRIMARY KEY,
-    artist_name VARCHAR(100) NOT NULL,
-    artist_email VARCHAR(150) NOT NULL,
-    artist_facebook VARCHAR(150),
-    artist_instagram VARCHAR(150),
-    artist_youtube VARCHAR(150),
-    artist_photo VARCHAR(150),
-    total_donate_amount INT(11)
-);
-
-CREATE TABLE plays (
-    plays_ID INT AUTO_INCREMENT PRIMARY KEY,
-    song_ID INT,
-    play_created VARCHAR(150) NOT NULL,
-    FOREIGN KEY (song_ID) REFERENCES song(song_ID)
-);
-
-CREATE TABLE comment (
-    comment_ID INT AUTO_INCREMENT PRIMARY KEY,
-    song_ID INT,
-    user_ID INT,
-    comment_detail VARCHAR(350) NOT NULL,
-    FOREIGN KEY (song_ID) REFERENCES song(song_ID),
-    FOREIGN KEY (user_ID) REFERENCES user(user_ID)
-);
-
-CREATE TABLE payment (
-    payment_ID INT AUTO_INCREMENT PRIMARY KEY,
-    user_ID INT,
-    payment_package VARCHAR(150) NOT NULL,
-    payment_date DATE NOT NULL,
-    FOREIGN KEY (user_ID) REFERENCES user(user_ID)
-);
-
-CREATE TABLE donate (
-    donate_ID INT AUTO_INCREMENT PRIMARY KEY,
-    user_ID INT,
-    song_ID INT,
-    wallet_ID INT,
-    donate_amount INT(11) NOT NULL,
-    donate_date DATE NOT NULL,
-    FOREIGN KEY (user_ID) REFERENCES user(user_ID),
-    FOREIGN KEY (song_ID) REFERENCES song(song_ID)
-);
-
-CREATE TABLE admin (
-    admin_ID INT AUTO_INCREMENT PRIMARY KEY,
-    admin_name VARCHAR(100) NOT NULL,
-    admin_password VARCHAR(200) NOT NULL
-);
+    artist_id INT(11) NOT NULL AUTO_INCREMENT,
+    artist_name VARCHAR(255) NOT NULL,
+    artist_email VARCHAR(255) NOT NULL,
+    artist_youtube VARCHAR(255),
+    artist_photo VARCHAR(255),
+    PRIMARY KEY (artist_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-------------------------------------
+ALTER TABLE Comments
+ADD CONSTRAINT fk_song_id
+FOREIGN KEY (song_id) REFERENCES Songs(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD COLUMN user_id INT(11),
+ADD CONSTRAINT fk_user_id
+FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE users
+ADD otp VARCHAR(10) DEFAULT NULL;
