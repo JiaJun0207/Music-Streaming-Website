@@ -88,8 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="navbar-links-container">
                     <a href="dashboard.php" class="navbar-link">Dashboard</a>
                     <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist</a>
-                    <a href="user_list.php" class="navbar-link">Users</a>
+                    <a href="artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="user_list.php" class="navbar-link">Users List</a>
                 </div>
                 <a href="#" class="logout">Logout</a>
             </div>
