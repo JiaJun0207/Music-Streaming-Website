@@ -1,16 +1,89 @@
 <?php
 session_start();
 
-if (isset($_SESSION["user_id"])) {
-    $conn = require __DIR__ . "/../db_connection.php";
-    
-    $sql = "SELECT name, profile_image FROM users WHERE user_id = ?";
+// Include database connection
+$conn = require __DIR__ . "/../db_connection.php"; // Adjust the path to db_connection.php as needed
+
+// Process form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Initialize variables to store form data
+    $song_title = $_POST['song_title'];
+    $artist = $_POST['artist'];
+    $language = $_POST['language'];
+    $categories = $_POST['categories'];
+    $release_date = $_POST['release_date'];
+    $mp3_upload = '';
+    $profile_picture_upload = '';
+    $background_picture_upload = '';
+
+    // Handle MP3 upload
+    if ($_FILES['mp3_upload']['error'] === UPLOAD_ERR_OK) {
+        $mp3_name = $_FILES['mp3_upload']['name'];
+        $temp_name = $_FILES['mp3_upload']['tmp_name'];
+        $mp3_path = "../uploads/mp3/" . $mp3_name;
+
+        if (move_uploaded_file($temp_name, $mp3_path)) {
+            $mp3_upload = $mp3_path;
+        } else {
+            echo "Failed to move uploaded MP3 file.";
+            exit();
+        }
+    } else {
+        echo "MP3 upload failed.";
+        exit();
+    }
+
+    // Handle profile picture upload
+    if ($_FILES['profile_picture_upload']['error'] === UPLOAD_ERR_OK) {
+        $profile_picture_name = $_FILES['profile_picture_upload']['name'];
+        $temp_name = $_FILES['profile_picture_upload']['tmp_name'];
+        $profile_picture_path = "../uploads/profile/" . $profile_picture_name;
+
+        if (move_uploaded_file($temp_name, $profile_picture_path)) {
+            $profile_picture_upload = $profile_picture_path;
+        } else {
+            echo "Failed to move uploaded profile picture.";
+            exit();
+        }
+    } else {
+        echo "Profile picture upload failed.";
+        exit();
+    }
+
+    // Handle background picture upload
+    if ($_FILES['background_picture_upload']['error'] === UPLOAD_ERR_OK) {
+        $background_picture_name = $_FILES['background_picture_upload']['name'];
+        $temp_name = $_FILES['background_picture_upload']['tmp_name'];
+        $background_picture_path = "../uploads/background/" . $background_picture_name;
+
+        if (move_uploaded_file($temp_name, $background_picture_path)) {
+            $background_picture_upload = $background_picture_path;
+        } else {
+            echo "Failed to move uploaded background picture.";
+            exit();
+        }
+    } else {
+        echo "Background picture upload failed.";
+        exit();
+    }
+
+    // Insert song data into database
+    $sql = "INSERT INTO songs (song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $_SESSION["user_id"]);
-    $stmt->execute();
-    $stmt->bind_result($name, $profile_image);
-    $stmt->fetch();
+    $stmt->bind_param("ssssssss", $song_title, $artist, $language, $categories, $release_date, $mp3_upload, $profile_picture_upload, $background_picture_upload);
+
+    if ($stmt->execute()) {
+        // Song added successfully
+        header("Location: song_list.php"); // Redirect to song list page
+        exit();
+    } else {
+        // Error inserting song
+        echo "Failed to add song: " . $conn->error;
+    }
+
+    // Close statement and connection
     $stmt->close();
+    $conn->close();
 }
 ?>
 
@@ -43,45 +116,46 @@ if (isset($_SESSION["user_id"])) {
         </aside>
         <main class="main-content">
             <h1>Upload a Song</h1>
-            <form id="uploadForm" action="../Upload.php" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="songTitle">Song Title<span class="required">*</span></label>
-                <input type="text" id="songTitle" name="songTitle" required>
-            </div>
-            <div class="form-group">
-                <label for="artist">Artist<span class="required">*</span></label>
-                <input type="text" id="artist" name="artist" required>
-            </div>
-            <div class="form-group">
-                <label for="language">Language</label>
-                <select id="language" name="language">
+            <form id="uploadForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="song_title">Song Title *</label>
+                    <input type="text" id="song_title" name="song_title" required>
+                </div>
+                <div class="form-group">
+                    <label for="artist">Artist *</label>
+                    <input type="text" id="artist" name="artist" required>
+                </div>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language" name="language">
                     <option value="english">English</option>
                     <option value="chinese">Chinese</option>
                     <option value="korean">Korean</option>
                     <option value="japanese">Japanese</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="categories">Categories<span class="required">*</span></label>
-                <input type="text" id="categories" name="categories" required>
-            </div>
-            <div class="form-group">
-                <label for="releaseDate">Release Date</label>
-                <input type="date" id="releaseDate" name="releaseDate" required>
-            </div>
-            <div class="form-group">
-                <label for="mp3Upload">MP3 Upload<span class="required">*</span></label>
-                <input type="file" id="mp3Upload" name="mp3Upload" accept="audio/mp3" required>
-            </div>
-            <div class="form-group">
-                <label for="profilePictureUpload">Profile Picture Upload</label>
-                <input type="file" id="profilePictureUpload" name="profilePictureUpload" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label for="backgroundPictureUpload">Background Picture Upload</label>
-                <input type="file" id="backgroundPictureUpload" name="backgroundPictureUpload" accept="image/*">
-            </div>
-                <button type="submit" name="submit">Add Song</button>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categories">Categories</label>
+                    <input type="text" id="categories" name="categories">
+                </div>
+                <div class="form-group">
+                    <label for="release_date">Release Date</label>
+                    <input type="date" id="release_date" name="release_date">
+                </div>
+                <div class="form-group">
+                    <label for="mp3_upload">MP3 Upload *</label>
+                    <input type="file" id="mp3_upload" name="mp3_upload" required accept="audio/*">
+                </div>
+                <div class="form-group">
+                    <label for="profile_picture_upload">Profile Picture Upload *</label>
+                    <input type="file" id="profile_picture_upload" name="profile_picture_upload" required accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="background_picture_upload">Background Picture Upload *</label>
+                    <input type="file" id="background_picture_upload" name="background_picture_upload" required accept="image/*">
+                </div>
+                
+                <button type="submit">Add Song</button>
             </form>
         </main>
     </div>

@@ -47,6 +47,12 @@ CREATE TABLE artist (
     PRIMARY KEY (artist_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -------------------------------------
+CREATE TABLE admins (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_email VARCHAR(255) NOT NULL,
+    admin_password VARCHAR(255) NOT NULL
+);
+-------------------------------------
 ALTER TABLE Comments
 ADD CONSTRAINT fk_song_id
 FOREIGN KEY (song_id) REFERENCES Songs(id) ON DELETE CASCADE ON UPDATE CASCADE;
