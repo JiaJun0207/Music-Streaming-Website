@@ -11,6 +11,20 @@ if (isset($_SESSION["user_id"])) {
     $stmt->bind_result($name, $profile_image, $email, $phone);
     $stmt->fetch();
     $stmt->close();
+
+    // Handle the image path
+    if (!empty($profile_image)) {
+        // Check if the path starts with 'uploads/' or '../uploads/'
+        if (strpos($profile_image, 'uploads/') === 0) {
+            $image_path = $profile_image;
+        } elseif (strpos($profile_image, '../uploads/') === 0) {
+            $image_path = substr($profile_image, 3); // Remove the '../' prefix
+        } else {
+            $image_path = 'uploads/profile/' . $profile_image;
+        }
+    } else {
+        $image_path = 'assets/pic/default.jpg';
+    }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -18,21 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $profile_image = $_FILES['profile_image']['name'];
     
     // File upload handling
-    if ($profile_image) {
-        $target_dir = "uploads/";
-        $target_file = $target_dir . basename($profile_image);
-        move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file);
-    } else {
-        $sql = "SELECT profile_image FROM users WHERE user_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $stmt->bind_result($profile_image);
-        $stmt->fetch();
-        $stmt->close();
+    if (!empty($_FILES['profile_image']['name'])) {
+        $target_dir = "uploads/profile/";
+        $file_extension = pathinfo($_FILES["profile_image"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = $target_dir . $new_filename;
+        
+        if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
+            $profile_image = $target_file;  // Store the relative path
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+            exit();
+        }
     }
 
     $sql = "UPDATE users SET name = ?, email = ?, phone = ?, profile_image = ? WHERE user_id = ?";
@@ -160,14 +173,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
                 </div>
                 <div class="navbar-user">
-                    <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
+                    <img src="<?php echo htmlspecialchars($image_path); ?>" alt="User Image">
                     <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
                 </div>
             </div>
         </aside>
         <main class="main-content">
             <div class="profile-header">
-                <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="Profile Picture" class="profile-picture">
+                <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Profile Picture" class="profile-picture">
                 <div class="profile-info">
                     <h1>Profile</h1>
                     <h2><?php echo htmlspecialchars($name); ?></h2>
