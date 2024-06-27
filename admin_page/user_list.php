@@ -32,7 +32,7 @@ $conn->close();
     <title>Admin - User List</title>
     <link rel="stylesheet" href="list.css">
     <style>
-        .profile-image {
+    .profile-image {
     max-width: 100%; 
     max-height: 45px; 
     width: auto; 
@@ -54,9 +54,9 @@ $conn->close();
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.html" class="navbar-link">Dashboard</a>
-                    <a href="song_list.html" class="navbar-link">Song List</a>
-                    <a href="artist_list.html" class="navbar-link">Artist</a>
+                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="song_list.php" class="navbar-link">Song List</a>
+                    <a href="artist_list.php" class="navbar-link">Artist</a>
                     <a href="user_list.php" class="navbar-link">Users</a>
                 </div>
                 <a href="../index.php" class="logout">Logout</a> <!-- Replace with your logout page -->

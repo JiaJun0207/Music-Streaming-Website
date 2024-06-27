@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $image_name = $_FILES['profile_image']['name'];
         $temp_name = $_FILES['profile_image']['tmp_name'];
-        $image_path = "../uploads/" . $image_name;
+        $image_path = "../uploads/profile/" . $image_name;
 
         // Move uploaded file to desired location
         if (move_uploaded_file($temp_name, $image_path)) {
@@ -86,9 +86,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="#" class="navbar-link">Dashboard</a>
-                    <a href="song_list.html" class="navbar-link">Song List</a>
-                    <a href="#" class="navbar-link">Artist</a>
+                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="song_list.php" class="navbar-link">Song List</a>
+                    <a href="artist_list.php" class="navbar-link">Artist</a>
                     <a href="user_list.php" class="navbar-link">Users</a>
                 </div>
                 <a href="#" class="logout">Logout</a>

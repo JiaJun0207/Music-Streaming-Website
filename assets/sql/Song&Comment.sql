@@ -14,7 +14,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ------------------------------------
 CREATE TABLE Songs (
-    id INT(11) NOT NULL AUTO_INCREMENT,
+    song_id INT(11) NOT NULL AUTO_INCREMENT,
     song_title VARCHAR(255) NOT NULL,
     artist VARCHAR(255) NOT NULL,
     language VARCHAR(255),
