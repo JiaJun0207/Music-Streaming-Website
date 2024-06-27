@@ -152,13 +152,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image"><span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="User_Home.php" class="navbar-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-search"></i> Discover</a>
+                    <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
                     <a href="#" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
                     <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
                     <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-user"></i> My Profile</a>
-                    <a href="#" class="navbar-link"><i class="fas fa-cog"></i> Settings</a>
                     <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
                 </div>
                 <div class="navbar-user">
