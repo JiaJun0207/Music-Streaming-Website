@@ -46,14 +46,30 @@ mysqli_close($conn);
     <title>Song Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/song_page.css">
+    <style>
+        body::before {
+            content: "";
+            background: url('<?php echo htmlspecialchars($song['background_picture_upload']); ?>') no-repeat center center/cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(8px);
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Add a slight transparency to the container */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <img src="<?php echo htmlspecialchars($song['profile_picture_upload']);?>" alt="Song Cover">
-            <h1><?php echo htmlspecialchars($song['song_title']);?></h1>
-            <p><?php echo htmlspecialchars($song['artist']);?></p>
-            <p><?php echo htmlspecialchars($song['categories']);?></p>
+            <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Cover">
+            <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
+            <p><?php echo htmlspecialchars($song['artist']); ?></p>
+            <p><?php echo htmlspecialchars($song['categories']); ?></p>
         </header>
         <main>
             <audio id="audio-player" controls>
