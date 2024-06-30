@@ -60,7 +60,7 @@ if (isset($_SESSION["user_id"])) {
         </div>
         <div class="navbar-links-container">
             <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
+            <a href="user_playlist.php" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
             <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
             <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>

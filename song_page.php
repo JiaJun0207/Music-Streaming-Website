@@ -1,40 +1,56 @@
 <?php
-// Include database connection and song.php script
 include 'db_connection.php';
 include 'song.php';
 
-// Get song ID from URL parameter
 $songID = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
-// Fetch song details
 $song = fetchSongDetails($conn, $songID);
 
 if (!$song) {
-    header("Location: error.php"); // Redirect to an error page
+    header("Location: error.php");
     exit;
 }
 
-// Simulate user ID (in a real scenario, this should be fetched from the session)
 $userID = 1; // For example purposes, replace with actual user ID
 
-// Handle new comment submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['commentText'])) {
-    $commentText = $_POST['commentText'];
-    $result = addComment($conn, $songID, $userID, $commentText);
+// Check if song is already liked by the user
+$isLikedQuery = $conn->prepare("SELECT COUNT(*) as count FROM liked_songs WHERE user_id = ? AND song_id = ?");
+$isLikedQuery->bind_param("ii", $userID, $songID);
+$isLikedQuery->execute();
+$result = $isLikedQuery->get_result();
+$likeStatus = $result->fetch_assoc()['count'] > 0;
+$isLikedQuery->close();
 
-    if ($result) {
-        // Redirect to avoid resubmission on refresh
-        header("Location: {$_SERVER['REQUEST_URI']}");
-        exit;
-    } else {
-        $error = "Error adding comment.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['commentText'])) {
+        $commentText = $_POST['commentText'];
+        $result = addComment($conn, $songID, $userID, $commentText);
+
+        if ($result) {
+            header("Location: {$_SERVER['REQUEST_URI']}");
+            exit;
+        } else {
+            $error = "Error adding comment.";
+        }
+    } elseif (isset($_POST['like'])) {
+        if ($likeStatus) {
+            // Remove from Liked Songs playlist
+            $deleteQuery = $conn->prepare("DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?");
+            $deleteQuery->bind_param("ii", $userID, $songID);
+            $deleteQuery->execute();
+            $deleteQuery->close();
+            $likeStatus = false; // Update like status
+        } else {
+            // Add to Liked Songs playlist
+            $likeQuery = $conn->prepare("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)");
+            $likeQuery->bind_param("ii", $userID, $songID);
+            $likeQuery->execute();
+            $likeQuery->close();
+            $likeStatus = true; // Update like status
+        }
     }
 }
 
-// Fetch comments for the song
 $comments = fetchComments($conn, $songID);
-
-// Close connection
 mysqli_close($conn);
 ?>
 
@@ -46,6 +62,7 @@ mysqli_close($conn);
     <title>Song Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/song_page.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body::before {
             content: "";
@@ -59,7 +76,20 @@ mysqli_close($conn);
             filter: blur(8px);
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.8); /* Add a slight transparency to the container */
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        .like-button {
+            font-size: 24px;
+            color: <?php echo $likeStatus ? '#ff0000' : '#ccc'; ?>;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+            padding: 0;
+            outline: none;
+        }
+        .like-button:hover {
+            color: #ff0000;
         }
     </style>
 </head>
@@ -70,6 +100,9 @@ mysqli_close($conn);
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
             <p><?php echo htmlspecialchars($song['artist']); ?></p>
             <p><?php echo htmlspecialchars($song['categories']); ?></p>
+            <form method="POST">
+                <button type="submit" name="like" class="like-button"><i class="far fa-heart"></i></button>
+            </form>
         </header>
         <main>
             <audio id="audio-player" controls>
@@ -80,9 +113,7 @@ mysqli_close($conn);
                 <h2>Comments</h2>
                 <form id="comment-form" method="POST">
                     <textarea id="comment-text" name="commentText" placeholder="Write a Comment..." required></textarea>
-                    <button type="submit" class="send-button">
-                        Submit
-                    </button>
+                    <button type="submit" class="send-button">Submit</button>
                 </form>
                 <div id="comment-list">
                     <?php foreach ($comments as $comment) { ?>
@@ -98,5 +129,19 @@ mysqli_close($conn);
             </section>
         </main>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const likeButton = document.querySelector('.like-button');
+
+            likeButton.addEventListener('click', function() {
+                // Toggle like status visually
+                if (likeButton.style.color === 'rgb(255, 0, 0)') {
+                    likeButton.style.color = '#ccc';
+                } else {
+                    likeButton.style.color = '#ff0000';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
