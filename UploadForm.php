@@ -39,6 +39,12 @@ if (isset($_SESSION["user_id"])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
     <style>
+        .navbar-link:hover {
+            color: #7700ff;
+        }
+        .navbar-link:hover i {
+            color: #7700ff;
+        }
         /* Add this to your CSS file */
         #logout {
             color: #ffffff; /* Default color */

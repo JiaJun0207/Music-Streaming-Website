@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start the session
+
 include 'db_connection.php';
 include 'song.php';
 
@@ -10,7 +12,12 @@ if (!$song) {
     exit;
 }
 
-$userID = 1; // For example purposes, replace with actual user ID
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$userID = $_SESSION['user_id']; // Get the user ID from the session
 
 // Check if song is already liked by the user
 $isLikedQuery = $conn->prepare("SELECT COUNT(*) as count FROM liked_songs WHERE user_id = ? AND song_id = ?");
