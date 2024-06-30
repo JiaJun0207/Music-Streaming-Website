@@ -12,9 +12,9 @@ if (!$song) {
     exit;
 }
 
-$userID = $_SESSION['user_id']; // For example purposes, replace with actual user ID
+$userID = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
-if (!isset($_SESSION['user_id'])) {
+if (!$userID) {
     header("Location: login.php");
     exit;
 }
@@ -98,6 +98,12 @@ mysqli_close($conn);
         .like-button:hover {
             color: #ff0000;
         }
+        .profile-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -125,7 +131,10 @@ mysqli_close($conn);
                 <div id="comment-list">
                     <?php foreach ($comments as $comment) { ?>
                         <div class="comment">
-                            <p><strong><?php echo htmlspecialchars($comment['name']); ?>:</strong> <?php echo htmlspecialchars($comment['comment_text']); ?></p>
+                            <div class="comment-header">
+                                <img src="<?php echo htmlspecialchars($comment['profile_image']); ?>" alt="Profile Picture" class="profile-image">
+                                <p><strong><?php echo htmlspecialchars($comment['name']); ?>:</strong> <?php echo htmlspecialchars($comment['comment_text']); ?></p>
+                            </div>
                             <small><?php echo htmlspecialchars($comment['created_at']); ?></small>
                         </div>
                     <?php } ?>

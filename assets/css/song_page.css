@@ -61,31 +61,38 @@ audio {
     outline: none;
     border-color: #57a;
 }
-
 .send-button {
-    /* Button styles */
-    padding: 10px 20px; /* Padding around text */
-    font-size: 16px; /* Font size */
-    font-weight: bold; /* Font weight */
-    color: #ffffff; /* Text color */
-    background-color: #6912db; /* Background color */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Cursor style */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Box shadow for depth */
-    transition: background-color 0.3s ease; /* Smooth background color transition */
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #6912db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
-
 .send-button:hover {
-    background-color: #b991ec; /* Darker background color on hover */
+    background-color: #b991ec;
 }
-
 .comment {
     background-color: #fff;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 .comment p {
     margin-bottom: 5px;
