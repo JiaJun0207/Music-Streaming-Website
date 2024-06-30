@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // File upload handling
     if ($profile_image) {
-        $target_dir = "uploads/";
+        $target_dir = "uploads/profile/";
         $target_file = $target_dir . basename($profile_image);
         move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file);
     } else {
@@ -160,14 +160,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
                 </div>
                 <div class="navbar-user">
-                    <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
-                    <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
+                <?php if (isset($profile_image)): ?>
+                <img src="uploads/profile/<?php echo htmlspecialchars($profile_image); ?>" alt="User Image"><?php endif; ?>
+
+                <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
                 </div>
             </div>
         </aside>
         <main class="main-content">
             <div class="profile-header">
-                <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="Profile Picture" class="profile-picture">
+                <img src="uploads/profile/<?php  htmlspecialchars($profile_image); ?>" alt="Profile Picture" class="profile-picture">
                 <div class="profile-info">
                     <h1>Profile</h1>
                     <h2><?php echo htmlspecialchars($name); ?></h2>
