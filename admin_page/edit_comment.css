@@ -75,7 +75,7 @@ body {
 
 .main-content {
     padding: 20px;
-    margin-left: 200px;
+    margin-left: 300px;
     width: calc(100% - 250px);
 }
 
@@ -100,6 +100,8 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
+    border: #1f1f2e;
+    border-width: 5px;
 }
 
 thead {
