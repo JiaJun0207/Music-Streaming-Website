@@ -94,7 +94,9 @@ $comments = fetchComments($conn, $song_id);
                 </div>
                 <div class="navbar-links-container">
                     <a href="dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
                     <a href="song_list.php" class="navbar-link">Song List</a>
+                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
                     <a href="artist_list.php" class="navbar-link">Artist List</a>
                     <a href="user_list.php" class="navbar-link">Users List</a>
                 </div>
