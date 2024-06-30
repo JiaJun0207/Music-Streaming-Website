@@ -82,7 +82,7 @@ $comments = fetchComments($conn, $song_id);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Comments Page</title>
-    <link rel="stylesheet" href="upload.css"> <!-- Adjust the path to your CSS file -->
+    <link rel="stylesheet" href="edit_comment.css"> <!-- Adjust the path to your CSS file -->
 </head>
 <body>
     <div class="container">
@@ -94,7 +94,9 @@ $comments = fetchComments($conn, $song_id);
                 </div>
                 <div class="navbar-links-container">
                     <a href="dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
                     <a href="song_list.php" class="navbar-link">Song List</a>
+                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
                     <a href="artist_list.php" class="navbar-link">Artist List</a>
                     <a href="user_list.php" class="navbar-link">Users List</a>
                 </div>
@@ -103,32 +105,35 @@ $comments = fetchComments($conn, $song_id);
         </aside>
         <main class="main-content">
             <h1>Admin Comments Page</h1>
+            <button class="add-new">Add New</button>
             <table>
                 <thead>
                     <tr>
                         <th>Comment ID</th>
-                        <th>User Name</th>
+                        <th>Song ID</th>
+                        <th>Username</th>
                         <th>Comment Text</th>
                         <th>Created At</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($comments as $comment): ?>
                         <tr>
                             <td><?php echo $comment['id']; ?></td>
+                            <td><?php echo $comment['song_id']; ?></td>
                             <td><?php echo $comment['name']; ?></td>
                             <td><?php echo $comment['comment_text']; ?></td>
                             <td><?php echo $comment['created_at']; ?></td>
                             <td>
                                 <form method="POST" style="display:inline-block;">
                                     <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>">
-                                    <button type="submit" name="delete">Delete</button>
+                                    <button type="submit" name="delete" class="action-btn delete-btn">Delete</button>
                                 </form>
                                 <form method="POST" style="display:inline-block;">
                                     <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>">
-                                    <input type="text" name="comment_text" value="<?php echo htmlspecialchars($comment['comment_text']); ?>">
-                                    <button type="submit" name="edit">Edit</button>
+                                    <input type="text" name="comment_text" value="<?php echo htmlspecialchars($comment['comment_text']); ?>" class="edit-input">
+                                    <button type="submit" name="edit" class="action-btn edit-btn">Edit</button>
                                 </form>
                             </td>
                         </tr>

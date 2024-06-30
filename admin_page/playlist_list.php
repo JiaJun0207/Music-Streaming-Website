@@ -4,17 +4,17 @@ session_start();
 // Include database connection
 $conn = require __DIR__ . "/../db_connection.php";
 
-// Initialize variable to store artist data
-$artists = [];
+// Initialize variable to store playlists data
+$playlists = [];
 
-// Fetch artist data
-$sql = "SELECT artist_id, artist_name, artist_email, artist_youtube, artist_photo FROM artist";
+// Fetch playlist data
+$sql = "SELECT playlist_id, playlist_name, created_at, user_id, playlist_image FROM playlists";
 $result = $conn->query($sql);
 
 // Check if query execution was successful
 if ($result) {
     // Fetch all rows as associative array
-    $artists = $result->fetch_all(MYSQLI_ASSOC);
+    $playlists = $result->fetch_all(MYSQLI_ASSOC);
 } else {
     // Query execution failed
     echo "Error: " . $sql . "<br>" . $conn->error;
@@ -29,10 +29,10 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Artist List</title>
+    <title>Admin - Playlist List</title>
     <link rel="stylesheet" href="list.css">
     <style>
-    .profile-image {
+    .playlist-image {
         max-width: 100%; 
         max-height: 45px; 
         width: auto; 
@@ -41,17 +41,8 @@ $conn->close();
         margin-top: 10px; 
         object-fit: contain; 
         align-items: center;
+        object-fit: contain; 
     }
-
-    .youtube-link {
-            color: blue;
-            text-decoration: none;
-        }
-
-        .youtube-link:hover {
-            color: darkblue;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -77,77 +68,80 @@ $conn->close();
             <header>
                 <input type="text" name="search" placeholder="Artist, Album, Song, etc...">
             </header>
-            <h1>Artist List</h1>
+            <h1>Playlist List</h1>
             <button id="addNewBtn">Add New</button>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Artist Name</th>
-                        <th>Email</th>
-                        <th>YouTube</th>
-                        <th>Photo</th>
+                        <th>Playlist Name</th>
+                        <th>Created At</th>
+                        <th>User ID</th>
+                        <th>Playlist Image</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="artistList">
-                    <?php foreach ($artists as $artist): ?>
+                <tbody id="playlistList">
+                    <?php foreach ($playlists as $playlist): ?>
                         <tr>
-                            <td><?php echo $artist['artist_id']; ?></td>
-                            <td><?php echo $artist['artist_name']; ?></td>
-                            <td><?php echo $artist['artist_email']; ?></td>
+                            <td><?php echo $playlist['playlist_id']; ?></td>
+                            <td><?php echo $playlist['playlist_name']; ?></td>
+                            <td><?php echo $playlist['created_at']; ?></td>
+                            <td><?php echo $playlist['user_id']; ?></td>
                             <td>
-                                <?php if (!empty($artist['artist_youtube'])): ?>
-                                    <a href="<?php echo $artist['artist_youtube']; ?>" target="_blank" class="youtube-link">YouTube Link</a>
-                                <?php else: ?>
-                                    No link available
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if (!empty($artist['artist_photo'])): ?>
-                                    <img src="<?php echo $artist['artist_photo']; ?>" alt="Artist Photo" class="profile-image">
+                                <?php if (!empty($playlist['playlist_image'])): ?>
+                                    <?php
+                                    $image_path = $playlist['playlist_image'];
+                                    // Check if the path starts with 'uploads/' or '../uploads/'
+                                    if (strpos($image_path, 'uploads/') === 0) {
+                                        $image_path = '../' . $image_path;
+                                    } elseif (strpos($image_path, '../uploads/') !== 0) {
+                                        $image_path = '../uploads/playlist/' . $image_path;
+                                    }
+                                    ?>
+                                    <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Playlist Image" class="playlist-image">
                                 <?php else: ?>
                                     No image available
                                 <?php endif; ?>
                             </td>
                             <td class="action-buttons">
-                                <button class="edit" onclick="editArtist(<?php echo $artist['artist_id']; ?>)">✏️</button>
-                                <button class="delete" onclick="deleteArtist(<?php echo $artist['artist_id']; ?>)">🗑️</button>
+                                <button class="edit" onclick="editPlaylist(<?php echo $playlist['playlist_id']; ?>)">✏️</button>
+                                <button class="delete" onclick="deletePlaylist(<?php echo $playlist['playlist_id']; ?>)">🗑️</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                    <?php if (empty($artists)): ?>
-                        <tr><td colspan="6">No artists found</td></tr>
+                    <?php if (empty($playlists)): ?>
+                        <tr><td colspan="6">No playlists found</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </main>
     </div>
     <script>
-        function editArtist(id) {
-            window.location.href = `edit_artist.php?id=${id}`;
+        function editPlaylist(id) {
+            window.location.href = `edit_playlist.php?id=${id}`;
         }
 
-        function deleteArtist(id) {
-            if (confirm('Are you sure you want to delete this artist?')) {
-                // Send AJAX request to delete artist
+        function deletePlaylist(id) {
+            if (confirm('Are you sure you want to delete this playlist?')) {
+                // Send AJAX request to delete playlist
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'delete_artist.php', true);
+                xhr.open('POST', 'delete_playlist.php', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.onload = function() {
                     if (xhr.status === 200) {
                         // Refresh the page after deletion
                         window.location.reload();
                     } else {
-                        alert('Failed to delete artist. Please try again.');
+                        alert('Failed to delete playlist. Please try again.');
                     }
                 };
-                xhr.send('artist_id=' + id);
+                xhr.send('playlist_id=' + id);
             }
         }
 
         document.getElementById('addNewBtn').addEventListener('click', function() {
-            window.location.href = 'upload_artist.php'; // Navigate to the upload artist page
+            window.location.href = 'upload_playlist.php'; // Navigate to the upload playlist page
         });
     </script>
 </body>
