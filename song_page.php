@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start the session
+
 include 'db_connection.php';
 include 'song.php';
 

@@ -55,9 +55,10 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($playlist['playlist_name']); ?></title>
     <link rel="stylesheet" href="user_playlist.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -92,7 +93,7 @@ mysqli_close($conn);
         .playlist-details h1 {
             margin: 0;
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 600; /* Poppins weight 600 for bold text */
         }
 
         .playlist-details p {
@@ -108,15 +109,23 @@ mysqli_close($conn);
 
         .song-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: flex-start; /* Align items at the start */
             padding: 10px 0;
             border-bottom: 1px solid #ddd;
         }
 
+        .song-item a {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column; /* Stack title and artist vertically */
+            width: 100%;
+        }
+
         .song-title {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600; /* Poppins weight 600 for bold text */
+            margin-bottom: 5px; /* Space between title and artist */
         }
 
         .song-artist {
@@ -129,14 +138,6 @@ mysqli_close($conn);
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 14px;
-        }
-
-        .song-item a {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            width: 100%;
-            align-items: center;
         }
 
         .song-item a:hover .song-title {

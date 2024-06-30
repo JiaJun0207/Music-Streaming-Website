@@ -266,6 +266,12 @@ function uploadImage($imagePath) {
         #logout:hover {
             color: #ff0000;
         }
+        .navbar-link:hover {
+            color: #7700ff;
+        }
+        .navbar-link:hover i {
+            color: #7700ff;
+        }
     </style>
 </head>
 <body>
