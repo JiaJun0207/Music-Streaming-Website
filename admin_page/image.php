@@ -1,34 +1,45 @@
 <?php
-// image.php
-
 if (isset($_GET['path'])) {
+    // Decode and sanitize the path
     $path = urldecode($_GET['path']);
-    
-    // Ensure the path is within the allowed directories
+
+    // Define allowed directories
     $allowedDirectories = [
-        '/absolute/path/to/your/images/directory',
-        '/absolute/path/to/your/mp3/directory'
+        '/xampp/htdocs/FYP/uploads/mp3',   // Adjust this path based on your setup
+        '/xampp/htdocs/FYP/uploads/profile', // Adjust this path based on your setup
+        '/xampp/htdocs/FYP/uploads/background' // Adjust this path based on your setup
     ];
 
-    $isAllowed = false;
-    foreach ($allowedDirectories as $directory) {
-        if (strpos(realpath($path), realpath($directory)) === 0) {
-            $isAllowed = true;
-            break;
+    // Function to check if path is in allowed directories
+    function isAllowedPath($path, $allowedDirectories) {
+        foreach ($allowedDirectories as $dir) {
+            if (strpos(realpath($path), realpath($dir)) === 0) {
+                return true;
+            }
         }
+        return false;
     }
 
-    if ($isAllowed && file_exists($path)) {
+    // Check if the path is allowed
+    if (isAllowedPath($path, $allowedDirectories) && file_exists($path)) {
+        // Get the MIME type of the file
         $mimeType = mime_content_type($path);
+
+        // Set the appropriate Content-Type header
         header('Content-Type: ' . $mimeType);
+
+        // Output the file content
         readfile($path);
+        exit;
     } else {
-        // Output debug information
+        // Output debug information or error message
         http_response_code(404);
-        echo 'File not found or access denied. Path: ' . $path . ' Real Path: ' . realpath($path);
+        echo 'File not found or access denied.';
     }
 } else {
+    // Output error if no file path is specified
     http_response_code(400);
     echo 'No file specified';
 }
 ?>
+
