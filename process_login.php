@@ -30,6 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     
     $is_invalid = true;
+    header("Location: index.php");
+
 }
 
 ?>
