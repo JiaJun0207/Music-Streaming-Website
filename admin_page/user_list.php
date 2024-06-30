@@ -87,11 +87,20 @@ $conn->close();
                             <td><?php echo $user['email']; ?></td>
                             <td><?php echo $user['phone']; ?></td>
                             <td>
-                                <?php if (!empty($user['profile_image'])): ?>
-                                    <img src="<?php echo $user['profile_image']; ?>" alt="Profile Image" class="profile-image">
-                                <?php else: ?>
-                                    No image available
-                                <?php endif; ?>
+                                    <?php if (!empty($user['profile_image'])): ?>
+                                        <?php
+                                        $image_path = $user['profile_image'];
+                                        // Check if the path starts with 'uploads/' or '../uploads/'
+                                        if (strpos($image_path, 'uploads/') === 0) {
+                                            $image_path = '../' . $image_path;
+                                        } elseif (strpos($image_path, '../uploads/') !== 0) {
+                                            $image_path = '../uploads/profile/' . $image_path;
+                                        }
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Profile Image" class="profile-image">
+                                    <?php else: ?>
+                                        No image available
+                                    <?php endif; ?>
                             </td>
                             <td class="action-buttons">
                                 <button class="edit" onclick="editUser(<?php echo $user['user_id']; ?>)">✏️</button>

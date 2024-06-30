@@ -11,6 +11,20 @@ if (isset($_SESSION["user_id"])) {
     $stmt->bind_result($name, $profile_image, $email, $phone);
     $stmt->fetch();
     $stmt->close();
+
+    // Handle the image path
+    if (!empty($profile_image)) {
+        // Check if the path starts with 'uploads/' or '../uploads/'
+        if (strpos($profile_image, 'uploads/') === 0) {
+            $image_path = $profile_image;
+        } elseif (strpos($profile_image, '../uploads/') === 0) {
+            $image_path = substr($profile_image, 3); // Remove the '../' prefix
+        } else {
+            $image_path = 'uploads/profile/' . $profile_image;
+        }
+    } else {
+        $image_path = 'assets/pic/default.jpg';
+    }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -18,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $profile_image = $_FILES['profile_image']['name'];
     
     // File upload handling
+<<<<<<< HEAD
     if ($profile_image) {
         $target_dir = "uploads/profile/";
         $target_file = $target_dir . basename($profile_image);
@@ -33,6 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_result($profile_image);
         $stmt->fetch();
         $stmt->close();
+=======
+    if (!empty($_FILES['profile_image']['name'])) {
+        $target_dir = "uploads/profile/";
+        $file_extension = pathinfo($_FILES["profile_image"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = $target_dir . $new_filename;
+        
+        if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
+            $profile_image = $target_file;  // Store the relative path
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+            exit();
+        }
+>>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
     }
 
     $sql = "UPDATE users SET name = ?, email = ?, phone = ?, profile_image = ? WHERE user_id = ?";
@@ -142,6 +170,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .modal-form button:hover {
             background-color: #472dbe;
         }
+        
+        /* Add this to your CSS file */
+        #logout {
+            color: #ffffff; /* Default color */
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        #logout:hover {
+            color: #ff0000; /* Red color on hover */
+        }
+        #logout:hover .fas {
+            color: #ff0000; /* Red color for the icon on hover */
+        }
     </style>
 </head>
 <body>
@@ -158,18 +199,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
                     <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
                     <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
+                    <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
                 <div class="navbar-user">
+<<<<<<< HEAD
                 <?php if (isset($profile_image)): ?>
                 <img src="uploads/profile/<?php echo htmlspecialchars($profile_image); ?>" alt="User Image"><?php endif; ?>
 
                 <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
+=======
+                    <img src="<?php echo htmlspecialchars($image_path); ?>" alt="User Image">
+                    <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
+>>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
                 </div>
             </div>
         </aside>
         <main class="main-content">
             <div class="profile-header">
+<<<<<<< HEAD
                 <img src="uploads/profile/<?php  htmlspecialchars($profile_image); ?>" alt="Profile Picture" class="profile-picture">
+=======
+                <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Profile Picture" class="profile-picture">
+>>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
                 <div class="profile-info">
                     <h1>Profile</h1>
                     <h2><?php echo htmlspecialchars($name); ?></h2>

@@ -12,6 +12,21 @@ if (isset($_SESSION["user_id"])) {
     $stmt->fetch();
     $stmt->close();
 }
+
+    // Handle the image path
+    if (!empty($profile_image)) {
+        // Check if the path starts with 'uploads/' or '../uploads/'
+        if (strpos($profile_image, 'uploads/') === 0) {
+            $image_path = $profile_image;
+        } elseif (strpos($profile_image, '../uploads/') === 0) {
+            $image_path = substr($profile_image, 3); // Remove the '../' prefix
+        } else {
+            $image_path = 'uploads/profile/' . $profile_image;
+        }
+    } else {
+        $image_path = 'assets/pic/default.jpg';
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +38,20 @@ if (isset($_SESSION["user_id"])) {
     <link rel="stylesheet" href="assets/css/Home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Add this to your CSS file */
+        #logout {
+            color: #ffffff; /* Default color */
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        #logout:hover {
+            color: #ff0000; /* Red color on hover */
+        }
+        #logout:hover .fas {
+            color: #ff0000; /* Red color for the icon on hover */
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -36,9 +65,10 @@ if (isset($_SESSION["user_id"])) {
             <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
             <a href="#" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
+            <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         <div class="navbar-user">
-            <img src="<?php echo $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'assets/pic/default.jpg'; ?>" alt="User Image">
+            <img src="<?php echo htmlspecialchars($image_path); ?>" alt="User Image">
             <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
         </div>
     </div>
