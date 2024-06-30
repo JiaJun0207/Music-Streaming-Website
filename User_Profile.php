@@ -34,20 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = $_POST['phone'];
     
     // File upload handling
-<<<<<<< HEAD
-    if ($profile_image) {
-        $target_dir = "uploads/profile/";
-        $target_file = $target_dir . basename($profile_image);
-        move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file);
-    } else {
-        $sql = "SELECT profile_image FROM users WHERE user_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $stmt->bind_result($profile_image);
-        $stmt->fetch();
-        $stmt->close();
-=======
     if (!empty($_FILES['profile_image']['name'])) {
         $target_dir = "uploads/profile/";
         $file_extension = pathinfo($_FILES["profile_image"]["name"], PATHINFO_EXTENSION);
@@ -60,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Sorry, there was an error uploading your file.";
             exit();
         }
->>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
     }
 
     $sql = "UPDATE users SET name = ?, email = ?, phone = ?, profile_image = ? WHERE user_id = ?";
@@ -202,25 +187,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
                 <div class="navbar-user">
-<<<<<<< HEAD
-                <?php if (isset($profile_image)): ?>
-                <img src="uploads/profile/<?php echo htmlspecialchars($profile_image); ?>" alt="User Image"><?php endif; ?>
-
-                <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
-=======
                     <img src="<?php echo htmlspecialchars($image_path); ?>" alt="User Image">
                     <span><a href="User_Profile.php" class="profile-link"><?php echo htmlspecialchars($name); ?></a></span>
->>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
                 </div>
             </div>
         </aside>
         <main class="main-content">
             <div class="profile-header">
-<<<<<<< HEAD
-                <img src="uploads/profile/<?php  htmlspecialchars($profile_image); ?>" alt="Profile Picture" class="profile-picture">
-=======
                 <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Profile Picture" class="profile-picture">
->>>>>>> 749b226d415ea37fd15bc5db5c2dfa868237dd72
                 <div class="profile-info">
                     <h1>Profile</h1>
                     <h2><?php echo htmlspecialchars($name); ?></h2>
