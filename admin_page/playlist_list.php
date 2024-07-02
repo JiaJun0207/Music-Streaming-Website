@@ -41,7 +41,6 @@ $conn->close();
         margin-top: 10px; 
         object-fit: contain; 
         align-items: center;
-        object-fit: contain; 
     }
     </style>
 </head>
@@ -105,7 +104,7 @@ $conn->close();
                                 <?php endif; ?>
                             </td>
                             <td class="action-buttons">
-                                <button class="edit" onclick="editPlaylist(<?php echo $playlist['playlist_id']; ?>)">✏️</button>
+                                <button class="manage" onclick="managePlaylist(<?php echo $playlist['playlist_id']; ?>)">📂</button>
                                 <button class="delete" onclick="deletePlaylist(<?php echo $playlist['playlist_id']; ?>)">🗑️</button>
                             </td>
                         </tr>
@@ -138,6 +137,10 @@ $conn->close();
                 };
                 xhr.send('playlist_id=' + id);
             }
+        }
+
+        function managePlaylist(id) {
+            window.location.href = `manage_playlist.php?id=${id}`;
         }
 
         document.getElementById('addNewBtn').addEventListener('click', function() {
