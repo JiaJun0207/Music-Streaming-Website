@@ -8,7 +8,7 @@ $conn = require __DIR__ . "/../db_connection.php";
 $songs = [];
 
 // Fetch song data
-$sql = "SELECT id, song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload FROM songs";
+$sql = "SELECT id, song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload FROM Songs";
 $result = $conn->query($sql);
 
 // Check if query execution was successful
@@ -32,16 +32,16 @@ $conn->close();
     <title>Admin - Song List</title>
     <link rel="stylesheet" href="list.css">
     <style>
-    .profile-image, .background-image {
-        max-width: 100%;
-        max-height: 45px;
-        width: auto;
-        height: auto;
-        display: block;
-        margin-top: 10px;
-        object-fit: contain;
-        align-items: center;
-    }
+        .profile-image, .background-image {
+            max-width: 100%;
+            max-height: 45px;
+            width: auto;
+            height: auto;
+            display: block;
+            margin-top: 10px;
+            object-fit: contain;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -61,7 +61,7 @@ $conn->close();
                     <a href="user_list.php" class="navbar-link">Users List</a>
                 </div>
                 <a href="../index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
-            </div>   
+            </div> 
         </aside>
         <main class="main-content">
             <header>
@@ -102,14 +102,14 @@ $conn->close();
                             </td>
                             <td>
                                 <?php if (!empty($song['profile_picture_upload'])): ?>
-                                    <img src="image.php?path=<?php echo $song['profile_picture_upload']; ?>" alt="Profile Image" class="profile-image">
+                                    <img src="image.php?path=<?php echo urlencode($song['profile_picture_upload']); ?>" alt="Profile Image" class="profile-image">
                                 <?php else: ?>
                                     No image available
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if (!empty($song['background_picture_upload'])): ?>
-                                    <img src="image.php?path=<?php echo $song['background_picture_upload']; ?>" alt="Background Image" class="background-image">
+                                    <img src="image.php?path=<?php echo urlencode($song['background_picture_upload']); ?>" alt="Background Image" class="background-image">
                                 <?php else: ?>
                                     No image available
                                 <?php endif; ?>

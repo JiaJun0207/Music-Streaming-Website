@@ -5,22 +5,22 @@ if (isset($_GET['path'])) {
 
     // Define allowed directories
     $allowedDirectories = [
-        '/xampp/htdocs/FYP/uploads/mp3',   // Adjust this path based on your setup
-        '/xampp/htdocs/FYP/uploads/profile', // Adjust this path based on your setup
-        '/xampp/htdocs/FYP/uploads/background' // Adjust this path based on your setup
+        realpath(__DIR__ . '/../uploads/mp3'),
+        realpath(__DIR__ . '/../uploads/profile'),
+        realpath(__DIR__ . '/../uploads/background')
     ];
 
     // Function to check if path is in allowed directories
     function isAllowedPath($path, $allowedDirectories) {
         foreach ($allowedDirectories as $dir) {
-            if (strpos(realpath($path), realpath($dir)) === 0) {
+            if (strpos(realpath($path), $dir) === 0) {
                 return true;
             }
         }
         return false;
     }
 
-    // Check if the path is allowed
+    // Check if the path is allowed and if the file exists
     if (isAllowedPath($path, $allowedDirectories) && file_exists($path)) {
         // Get the MIME type of the file
         $mimeType = mime_content_type($path);
@@ -42,4 +42,3 @@ if (isset($_GET['path'])) {
     echo 'No file specified';
 }
 ?>
-

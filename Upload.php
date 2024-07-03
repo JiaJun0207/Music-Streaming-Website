@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $categories = mysqli_real_escape_string($conn, $_POST['categories']);
     $releaseDate = $_POST['releaseDate']; // Assuming date is in correct format from HTML form
 
+
     // File upload handling for MP3 file
     $mp3Upload = $_FILES['mp3Upload']['name'];
     $mp3Upload_temp = $_FILES['mp3Upload']['tmp_name'];
@@ -43,11 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if (mysqli_query($conn, $sql)) {
         echo "Song added successfully.";
-        
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 
+    // Redirect to UploadForm.php after 2 seconds
+    header("refresh:1;url=UploadForm.php");
     // Close connection
     mysqli_close($conn);
 }
+?>
