@@ -21,13 +21,13 @@ function fetchSongDetails($conn, $songID) {
 // Function to get profile image path
 function getProfileImagePath($profile_image) {
     if (!empty($profile_image)) {
-        // Check if the path starts with 'uploads/' or '../uploads/'
-        if (strpos($profile_image, '../uploads/') === 0) {
+        
+        if (strpos($profile_image, 'uploads/') === 0) {
             $image_path = $profile_image;
-        } elseif (strpos($profile_image, '../uploads/') === 0) {
-            $image_path = substr($profile_image, 3); // Remove the '../' prefix
+        } elseif (strpos($profile_image, 'uploads/') === 0) {
+            $image_path = substr($profile_image, 3); 
         } else {
-            $image_path = '../uploads/profile/' . $profile_image;
+            $image_path = 'uploads/profile/' . $profile_image;
         }
     } else {
         $image_path = 'assets/pic/default.jpg'; // Default image path
