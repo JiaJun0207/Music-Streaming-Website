@@ -90,6 +90,7 @@
                     <button type="submit">Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+                <p><a href="forgot_password.php">Forgot Password?</a></p>
             </div>
         </div>
     </div>
