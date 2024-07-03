@@ -13,19 +13,26 @@ if (isset($_SESSION["user_id"])) {
     $stmt->close();
 }
 
-    // Handle the image path
-    if (!empty($profile_image)) {
-        // Check if the path starts with 'uploads/' or '../uploads/'
-        if (strpos($profile_image, 'uploads/') === 0) {
-            $image_path = $profile_image;
-        } elseif (strpos($profile_image, '../uploads/') === 0) {
-            $image_path = substr($profile_image, 3); // Remove the '../' prefix
-        } else {
-            $image_path = 'uploads/profile/' . $profile_image;
-        }
+// Handle the image path
+if (!empty($profile_image)) {
+    if (strpos($profile_image, 'uploads/') === 0) {
+        $image_path = $profile_image;
+    } elseif (strpos($profile_image, '../uploads/') === 0) {
+        $image_path = substr($profile_image, 3);
     } else {
-        $image_path = 'assets/pic/default.jpg';
+        $image_path = 'uploads/profile/' . $profile_image;
     }
+} else {
+    $image_path = 'assets/pic/default.jpg';
+}
+
+// Fetch trending songs
+$trending_sql = "SELECT id, song_title, artist FROM Songs ORDER BY release_date DESC LIMIT 10";
+$trending_result = $conn->query($trending_sql);
+
+// Fetch albums (grouped by artist)
+$albums_sql = "SELECT artist, COUNT(*) AS album_count, MAX(profile_picture_upload) AS profile_picture FROM Songs GROUP BY artist";
+$albums_result = $conn->query($albums_sql);
 
 ?>
 
@@ -39,17 +46,15 @@ if (isset($_SESSION["user_id"])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Add this to your CSS file */
         #logout {
-            color: #ffffff; /* Default color */
-            transition: color 0.3s; /* Smooth transition for color change */
+            color: #ffffff;
+            transition: color 0.3s;
         }
-
         #logout:hover {
-            color: #ff0000; /* Red color on hover */
+            color: #ff0000;
         }
         #logout:hover .fas {
-            color: #ff0000; /* Red color for the icon on hover */
+            color: #ff0000;
         }
     </style>
 </head>
@@ -96,62 +101,24 @@ if (isset($_SESSION["user_id"])) {
                     <button class="content-button">Following</button>
                 </div>
                 <div class="albums">
-                    <div class="album">
-                        <img src="assets/pic/download (1).jpg" alt="Album Image">
-                        <span>JiaJun IN PARIS</span>
-                        <span>4 Albums</span>
-                        <a href="#" class="see-details">See Details</a>
-                    </div>
-                    <div class="album">
-                        <img src="assets/pic/ermm.jpg" alt="Album Image">
-                        <span>Yael Amari</span>
-                        <span>2 Albums</span>
-                        <a href="#" class="see-details">See Details</a>
-                    </div>
-                    <div class="album">
-                        <img src="assets/pic/eva (@evawxsh) • Instagram photos and videos.jpg" alt="Album Image">
-                        <span>1+1=2</span>
-                        <span>4 Albums</span>
-                        <a href="#" class="see-details">See Details</a>
-                    </div>
-                    <div class="album">
-                        <img src="assets/pic/Rose.jpg" alt="Album Image">
-                        <span>BlackPink</span>
-                        <span>4 Albums</span>
-                        <a href="#" class="see-details">See Details</a>
-                    </div>
-                    <div class="album">
-                        <img src="assets/pic/bruh.jpg" alt="Album Image">
-                        <span>Larana Group</span>
-                        <span>3 Albums</span>
-                        <a href="#" class="see-details">See Details</a>
-                    </div>
+                    <?php while ($album = $albums_result->fetch_assoc()): ?>
+                        <div class="album">
+                            <img src="<?php echo htmlspecialchars($album['profile_picture']); ?>" alt="Album Image">
+                            <span><?php echo htmlspecialchars($album['artist']); ?></span>
+                            <span><?php echo htmlspecialchars($album['album_count']) . ' Albums'; ?></span>
+                            <a href="artist_home.php?artist=<?php echo urlencode($album['artist']); ?>" class="see-details">See Details</a>
+                        </div>
+                    <?php endwhile; ?>
                 </div>
             </div>
             <div class="trending">
                 <h1>Popular and Trending</h1>
                 <ul>
                     <hr>
-                    <li><a href="#">Keep it simple - Alfredo Torres</a></li>
-                    <hr>
-                    <li><a href="#">You're wonderful - Avery Davis</a></li>
-                    <hr>
-                    <li><a href="#">You got this - Cahaya Dewi</a></li>
-                    <hr>
-                    <li><a href="#">Ji Ni Tai Mei - kunkun</a></li>
-                    <hr>
-                    <li><a href="#">Kindness - Yael Amari</a></li>
-                    <hr>
-                    <li><a href="#">You're my sunshine - Juliana Silva</a></li>
-                    <hr>
-                    <li><a href="#">Love - Itsuki Takahashi</a></li>
-                    <hr>
-                    <li><a href="#">More - Jien Sheng</a></li>
-                    <hr>
-                    <li><a href="#">Depression - Melvin</a></li>
-                    <hr>
-                    <li><a href="#">See you - JiaJun</a></li>
-
+                    <?php while ($trending = $trending_result->fetch_assoc()): ?>
+                        <li><a href="song_page.php?id=<?php echo $trending['id']; ?>"><?php echo htmlspecialchars($trending['song_title']) . ' - ' . htmlspecialchars($trending['artist']); ?></a></li>
+                        <hr>
+                    <?php endwhile; ?>
                     <h4 id="ads">Upload your production and become the next Trending! 🥳 </h4>
                 </ul>
             </div>
@@ -159,3 +126,7 @@ if (isset($_SESSION["user_id"])) {
     </div>
 </body>
 </html>
+
+<?php
+$conn->close();
+?>
