@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Handle file upload
     if (isset($_FILES['playlistImage']) && $_FILES['playlistImage']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/uploads/playlist_images/';
+        $uploadDir = __DIR__ . 'uploads/playlist_images/';
         $uploadFile = $uploadDir . basename($_FILES['playlistImage']['name']);
 
         // Ensure the directory exists
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if (move_uploaded_file($_FILES['playlistImage']['tmp_name'], $uploadFile)) {
-            $imagePath = '/uploads/playlist_images/' . basename($_FILES['playlistImage']['name']);
+            $imagePath = 'uploads/playlist_images/' . basename($_FILES['playlistImage']['name']);
         } else {
             echo "Error uploading image.";
         }
