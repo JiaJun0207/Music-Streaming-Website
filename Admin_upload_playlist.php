@@ -11,13 +11,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Handle file upload
     if (isset($_FILES['playlistImage']) && $_FILES['playlistImage']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '/uploads/playlist/';
+        $uploadDir = __DIR__ . '/uploads/playlist_images/';
         $uploadFile = $uploadDir . basename($_FILES['playlistImage']['name']);
-        
+
+        // Ensure the directory exists
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
         if (move_uploaded_file($_FILES['playlistImage']['tmp_name'], $uploadFile)) {
-            $imagePath = '/uploads/playlist/' . basename($_FILES['playlistImage']['name']);
+            $imagePath = '/uploads/playlist_images/' . basename($_FILES['playlistImage']['name']);
         } else {
             echo "Error uploading image.";
+        }
+    } else {
+        // Handle different upload errors
+        switch ($_FILES['playlistImage']['error']) {
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                echo "File is too large.";
+                break;
+            case UPLOAD_ERR_PARTIAL:
+                echo "File was only partially uploaded.";
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                echo "No file was uploaded.";
+                break;
+            case UPLOAD_ERR_NO_TMP_DIR:
+                echo "Missing a temporary folder.";
+                break;
+            case UPLOAD_ERR_CANT_WRITE:
+                echo "Failed to write file to disk.";
+                break;
+            case UPLOAD_ERR_EXTENSION:
+                echo "File upload stopped by extension.";
+                break;
+            default:
+                echo "Unknown upload error.";
+                break;
         }
     }
 
