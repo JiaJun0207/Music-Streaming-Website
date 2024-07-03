@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php";
+$conn = require __DIR__ . "/db_connection.php";
 
 // Initialize variable to store songs data
 $songs = [];
@@ -18,7 +18,7 @@ if ($result) {
 } else {
     // Query execution failed
     echo "Error: " . $sql . "<br>" . $conn->error;
-}
+} 
 
 // Close connection
 $conn->close();
@@ -30,7 +30,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Song List</title>
-    <link rel="stylesheet" href="list.css">
+    <link rel="stylesheet" href="Admin_list.css">
     <style>
         .profile-image, .background-image {
             max-width: 100%;
@@ -49,18 +49,18 @@ $conn->close();
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
-                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
-                    <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist List</a>
-                    <a href="user_list.php" class="navbar-link">Users List</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
+                    <a href="Admin_song_list.php" class="navbar-link">Song List</a>
+                    <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
+                    <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="../index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
+                <a href="index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
             </div> 
         </aside>
         <main class="main-content">
@@ -102,14 +102,14 @@ $conn->close();
                             </td>
                             <td>
                                 <?php if (!empty($song['profile_picture_upload'])): ?>
-                                    <img src="image.php?path=<?php echo urlencode($song['profile_picture_upload']); ?>" alt="Profile Image" class="profile-image">
+                                    <img src="Admin_image.php?path=<?php echo urlencode($song['profile_picture_upload']); ?>" alt="Profile Image" class="profile-image">
                                 <?php else: ?>
                                     No image available
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if (!empty($song['background_picture_upload'])): ?>
-                                    <img src="image.php?path=<?php echo urlencode($song['background_picture_upload']); ?>" alt="Background Image" class="background-image">
+                                    <img src="Admin_image.php?path=<?php echo urlencode($song['background_picture_upload']); ?>" alt="Background Image" class="background-image">
                                 <?php else: ?>
                                     No image available
                                 <?php endif; ?>
@@ -129,14 +129,14 @@ $conn->close();
     </div>
     <script>
         function editSong(id) {
-            window.location.href = `edit_song.php?id=${id}`;
+            window.location.href = `Admin_edit_song.php?id=${id}`;
         }
 
         function deleteSong(id) {
             if (confirm('Are you sure you want to delete this song?')) {
                 // Send AJAX request to delete song
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'delete_song.php', true);
+                xhr.open('POST', 'Admin_delete_song.php', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.onload = function() {
                     if (xhr.status === 200) {
@@ -151,7 +151,7 @@ $conn->close();
         }
 
         document.getElementById('addNewBtn').addEventListener('click', function() {
-            window.location.href = 'upload_song.php'; // Navigate to the upload song page
+            window.location.href = 'Admin_upload_song.php'; // Navigate to the upload song page
         });
     </script>
 </body>

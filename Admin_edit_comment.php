@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php"; // Adjust the path to db_connection.php as needed
+$conn = require __DIR__ . "/db_connection.php"; // Adjust the path to db_connection.php as needed
 
 // Function to fetch comments for a song
 function fetchComments($conn) {
@@ -30,25 +30,25 @@ $comments = fetchComments($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Comments Page</title>
-    <link rel="stylesheet" href="edit_comment.css"> <!-- Adjust the path to your CSS file -->
+    <link rel="stylesheet" href="Admin_edit_comment.css"> <!-- Adjust the path to your CSS file -->
 </head>
 <body>
     <div class="container">
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
-                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
-                    <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist List</a>
-                    <a href="user_list.php" class="navbar-link">Users List</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
+                    <a href="Admin_song_list.php" class="navbar-link">Song List</a>
+                    <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
+                    <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="#" class="logout">Logout</a>
+                <a href="index.php" class="logout">Logout</a>
             </div>
         </aside>
         <main class="main-content">

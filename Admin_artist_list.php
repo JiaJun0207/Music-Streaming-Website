@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php";
+$conn = require __DIR__ . "/db_connection.php";
 
 // Initialize variable to store artist data
 $artists = [];
@@ -30,7 +30,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Artist List</title>
-    <link rel="stylesheet" href="list.css">
+    <link rel="stylesheet" href="Admin_list.css">
     <style>
     .profile-image {
         max-width: 100%; 
@@ -59,18 +59,18 @@ $conn->close();
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
-                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
-                    <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist List</a>
-                    <a href="user_list.php" class="navbar-link">Users List</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
+                    <a href="Admin_song_list.php" class="navbar-link">Song List</a>
+                    <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
+                    <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="../index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
+                <a href="index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
             </div>   
         </aside>
         <main class="main-content">
@@ -125,14 +125,14 @@ $conn->close();
     </div>
     <script>
         function editArtist(id) {
-            window.location.href = `edit_artist.php?id=${id}`;
+            window.location.href = `Admin_edit_artist.php?id=${id}`;
         }
 
         function deleteArtist(id) {
             if (confirm('Are you sure you want to delete this artist?')) {
                 // Send AJAX request to delete artist
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'delete_artist.php', true);
+                xhr.open('POST', 'Admin_delete_artist.php', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.onload = function() {
                     if (xhr.status === 200) {
@@ -147,7 +147,7 @@ $conn->close();
         }
 
         document.getElementById('addNewBtn').addEventListener('click', function() {
-            window.location.href = 'upload_artist.php'; // Navigate to the upload artist page
+            window.location.href = 'Admin_upload_artist.php'; // Navigate to the upload artist page
         });
     </script>
 </body>

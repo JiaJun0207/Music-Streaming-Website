@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php"; // Adjust the path to db_connection.php as needed
+$conn = require __DIR__ . "/db_connection.php"; // Adjust the path to db_connection.php as needed
 
 // Check if artist ID is provided
 if (!isset($_GET['id'])) {
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_FILES['artist_photo']['error'] === UPLOAD_ERR_OK) {
         $image_name = $_FILES['artist_photo']['name'];
         $temp_name = $_FILES['artist_photo']['tmp_name'];
-        $image_path = "../uploads/artist/" . $image_name;
+        $image_path = "uploads/artist/" . $image_name;
 
         // Move uploaded file to desired location
         if (move_uploaded_file($temp_name, $image_path)) {
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         // Artist updated successfully
-        header("Location: artist_list.php");
+        header("Location: Admin_artist_list.php");
         exit();
     } else {
         // Error updating artist
@@ -75,30 +75,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Artist</title>
-    <link rel="stylesheet" href="upload.css">
+    <link rel="stylesheet" href="Admin_upload.css">
 </head>
 <body>
     <div class="container">
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
-                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
-                    <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist List</a>
-                    <a href="user_list.php" class="navbar-link">Users List</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
+                    <a href="Admin_song_list.php" class="navbar-link">Song List</a>
+                    <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
+                    <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="#" class="logout">Logout</a>
+                <a href="index.php" class="logout">Logout</a>
             </div>
         </aside>
         <main class="main-content">
             <h1>Edit Artist</h1>
-            <form id="editForm" action="edit_artist.php?id=<?php echo $artist_id; ?>" method="POST" enctype="multipart/form-data">
+            <form id="editForm" action="Admin_edit_artist.php?id=<?php echo $artist_id; ?>" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="artist_id" value="<?php echo $artist['artist_id']; ?>">
                 <div class="form-group">
                     <label for="artist_name">Artist Name *</label>

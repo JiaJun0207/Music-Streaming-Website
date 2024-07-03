@@ -1,25 +1,25 @@
 <?php
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['artist_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     // Include database connection
-    $conn = require __DIR__ . "/../db_connection.php";
+    $conn = require __DIR__ . "/db_connection.php";
     
     // Sanitize the input to prevent SQL injection
-    $artist_id = $conn->real_escape_string($_POST['artist_id']);
+    $id = $conn->real_escape_string($_POST['id']);
 
     // Prepare delete statement
-    $sql = "DELETE FROM artist WHERE artist_id = ?";
+    $sql = "DELETE FROM songs WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $artist_id);
+    $stmt->bind_param('i', $id);
     
     // Execute the statement
     if ($stmt->execute()) {
         // Deletion successful
-        echo 'Artist deleted successfully.';
+        echo 'Song deleted successfully.';
     } else {
         // Deletion failed
-        echo 'Error deleting artist: ' . $conn->error;
+        echo 'Error deleting song: ' . $conn->error;
     }
 
     // Close statement and connection

@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php";
+$conn = require __DIR__ . "/db_connection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $playlistId = $_POST['playlist_id'];

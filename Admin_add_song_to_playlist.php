@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php";
+$conn = require __DIR__ . "/db_connection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['playlistId']) && isset($_POST['songId'])) {
     $playlistId = $_POST['playlistId'];
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['playlistId']) && isset
         $sqlAdd = "INSERT INTO playlist_songs (playlist_id, song_id) VALUES ('$playlistId', '$songId')";
         
         if ($conn->query($sqlAdd) === TRUE) {
-            header("Location: manage_playlist.php?id=$playlistId");
+            header("Location: Admin_manage_playlist.php?id=$playlistId");
             exit();
         } else {
             echo "Error: " . $sqlAdd . "<br>" . $conn->error;

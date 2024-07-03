@@ -5,9 +5,9 @@ if (isset($_GET['path'])) {
 
     // Define allowed directories
     $allowedDirectories = [
-        realpath(__DIR__ . '/../uploads/mp3'),
-        realpath(__DIR__ . '/../uploads/profile'),
-        realpath(__DIR__ . '/../uploads/background')
+        realpath(__DIR__ . '/uploads/mp3'),
+        realpath(__DIR__ . '/uploads/profile'),
+        realpath(__DIR__ . '/uploads/background')
     ];
 
     // Function to check if path is in allowed directories

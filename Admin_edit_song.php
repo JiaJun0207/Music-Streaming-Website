@@ -2,7 +2,7 @@
 session_start();
 
 // Include database connection
-$conn = require __DIR__ . "/../db_connection.php"; // Adjust the path to db_connection.php as needed
+$conn = require __DIR__ . "/db_connection.php"; // Adjust the path to db_connection.php as needed
 
 // Check if song ID is provided
 if (!isset($_GET['id'])) {
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_FILES['mp3_upload']['error'] === UPLOAD_ERR_OK) {
         $mp3_name = $_FILES['mp3_upload']['name'];
         $temp_name = $_FILES['mp3_upload']['tmp_name'];
-        $mp3_path = "../uploads/mp3/" . $mp3_name;
+        $mp3_path = "uploads/mp3/" . $mp3_name;
 
         // Move uploaded file to desired location
         if (move_uploaded_file($temp_name, $mp3_path)) {
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_FILES['profile_picture_upload']['error'] === UPLOAD_ERR_OK) {
         $image_name = $_FILES['profile_picture_upload']['name'];
         $temp_name = $_FILES['profile_picture_upload']['tmp_name'];
-        $image_path = "../uploads/profile/" . $image_name;
+        $image_path = "uploads/profile/" . $image_name;
 
         // Move uploaded file to desired location
         if (move_uploaded_file($temp_name, $image_path)) {
@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_FILES['background_picture_upload']['error'] === UPLOAD_ERR_OK) {
         $bg_image_name = $_FILES['background_picture_upload']['name'];
         $bg_temp_name = $_FILES['background_picture_upload']['tmp_name'];
-        $bg_image_path = "../uploads/background/" . $bg_image_name;
+        $bg_image_path = "uploads/background/" . $bg_image_name;
 
         // Move uploaded file to desired location
         if (move_uploaded_file($bg_temp_name, $bg_image_path)) {
@@ -92,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         // Song updated successfully
-        header("Location: song_list.php");
+        header("Location: Admin_song_list.php");
         exit();
     } else {
         // Error updating song
@@ -118,23 +118,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <aside class="sidebar">
             <div class="navbar">
                 <div class="navbar-logo">
-                    <img src="../assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
+                    <img src="assets/pic/Inspirational_Quote_Instagram_Post_1.png" alt="Logo" class="navbar-image">
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
-                    <a href="playlist_list.php" class="navbar-link">Playlist List</a>
-                    <a href="song_list.php" class="navbar-link">Song List</a>
-                    <a href="edit_comment.php" class="navbar-link">Comment List</a>
-                    <a href="artist_list.php" class="navbar-link">Artist List</a>
-                    <a href="user_list.php" class="navbar-link">Users List</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
+                    <a href="Admin_song_list.php" class="navbar-link">Song List</a>
+                    <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
+                    <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
+                    <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="#" class="logout">Logout</a>
+                <a href="index.php" class="logout">Logout</a>
             </div>
         </aside>
         <main class="main-content">
             <h1>Edit Song</h1>
-            <form id="editForm" action="edit_song.php?id=<?php echo $song_id; ?>" method="POST" enctype="multipart/form-data">
+            <form id="editForm" action="Admin_edit_song.php?id=<?php echo $song_id; ?>" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="song_id" value="<?php echo $song['id']; ?>">
                 <div class="form-group">
                     <label for="song_title">Song Title *</label>
