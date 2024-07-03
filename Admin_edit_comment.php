@@ -7,7 +7,11 @@ $conn = require __DIR__ . "/db_connection.php"; // Adjust the path to db_connect
 // Function to fetch comments for a song
 function fetchComments($conn) {
     $comments = [];
-    $commentsQuery = "SELECT c.*, u.name FROM Comments c JOIN users u ON c.user_id = u.user_id ORDER BY created_at DESC";
+    $commentsQuery = "SELECT c.*, u.name, s.song_title 
+                      FROM Comments c 
+                      JOIN users u ON c.user_id = u.user_id 
+                      JOIN songs s ON c.song_id = s.id 
+                      ORDER BY c.created_at DESC";
     $stmt = $conn->prepare($commentsQuery);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -58,7 +62,7 @@ $comments = fetchComments($conn);
                 <thead>
                     <tr>
                         <th>Comment ID</th>
-                        <th>Song ID</th>
+                        <th>Song Title</th>
                         <th>Username</th>
                         <th>Comment Text</th>
                         <th>Created At</th>
@@ -69,7 +73,7 @@ $comments = fetchComments($conn);
                     <?php foreach ($comments as $comment): ?>
                         <tr>
                             <td><?php echo $comment['id']; ?></td>
-                            <td><?php echo $comment['song_id']; ?></td>
+                            <td><?php echo $comment['song_title']; ?></td>
                             <td><?php echo $comment['name']; ?></td>
                             <td><?php echo $comment['comment_text']; ?></td>
                             <td><?php echo $comment['created_at']; ?></td>
