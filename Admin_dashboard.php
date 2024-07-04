@@ -53,27 +53,43 @@ $conn->close();
     <link rel="stylesheet" href="Admin_list.css">
     <style>
         
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        .stat {
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            width: 200px;
-            text-align: center;
-            margin: 10px;
-        }
-        .stat h2 {
-            margin: 10px 0;
-        }
+    .main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease-in-out; 
+}
+
+.stat:hover {
+    transform: scale(1.05);
+}
+
+.stat h2 {
+    margin: 10px 0;
+    font-size: 2.5rem; 
+    color: #333; 
+}
+
+.stat p {
+    color: #666;
+    font-size: 1.2rem; 
+}
     </style>
 </head>
 <body>
