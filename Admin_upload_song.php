@@ -67,12 +67,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Insert song data into database
-    $sql = "INSERT INTO songs (song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssss", $song_title, $artist, $language, $categories, $release_date, $mp3_upload, $profile_picture_upload, $background_picture_upload);
+    // Check if the artist already exists
+    $artist_sql = "SELECT artist_id FROM artist WHERE artist_name = ?";
+    $artist_stmt = $conn->prepare($artist_sql);
+    $artist_stmt->bind_param("s", $artist);
+    $artist_stmt->execute();
+    $artist_stmt->store_result();
 
-    if ($stmt->execute()) {
+    if ($artist_stmt->num_rows == 0) {
+        // Artist does not exist, insert new artist
+        $insert_artist_sql = "INSERT INTO artist (artist_name, artist_email) VALUES (?, '')"; // Add other fields as needed
+        $insert_artist_stmt = $conn->prepare($insert_artist_sql);
+        $insert_artist_stmt->bind_param("s", $artist);
+        $insert_artist_stmt->execute();
+        $artist_id = $insert_artist_stmt->insert_id;
+        $insert_artist_stmt->close();
+    } else {
+        // Artist exists, get the artist_id
+        $artist_stmt->bind_result($artist_id);
+        $artist_stmt->fetch();
+    }
+
+    $artist_stmt->close();
+
+    // Insert song data into database
+    $song_sql = "INSERT INTO songs (song_title, artist_id, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $song_stmt = $conn->prepare($song_sql);
+    $song_stmt->bind_param("sissssss", $song_title, $artist_id, $language, $categories, $release_date, $mp3_upload, $profile_picture_upload, $background_picture_upload);
+
+    if ($song_stmt->execute()) {
         // Song added successfully
         header("Location: Admin_song_list.php"); // Redirect to song list page
         exit();
@@ -82,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Close statement and connection
-    $stmt->close();
+    $song_stmt->close();
     $conn->close();
 }
 ?>
@@ -130,10 +153,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group">
                     <label for="language">Language</label>
                     <select id="language" name="language">
-                    <option value="english">English</option>
-                    <option value="chinese">Chinese</option>
-                    <option value="korean">Korean</option>
-                    <option value="japanese">Japanese</option>
+                        <option value="english">English</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="korean">Korean</option>
+                        <option value="japanese">Japanese</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -156,7 +179,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="background_picture_upload">Background Picture Upload *</label>
                     <input type="file" id="background_picture_upload" name="background_picture_upload" required accept="image/*">
                 </div>
-                
                 <button type="submit">Add Song</button>
             </form>
         </main>

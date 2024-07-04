@@ -7,8 +7,10 @@ $conn = require __DIR__ . "/db_connection.php";
 // Initialize variable to store songs data
 $songs = [];
 
-// Fetch song data
-$sql = "SELECT id, song_title, artist, language, categories, release_date, mp3_upload, profile_picture_upload, background_picture_upload FROM Songs";
+// Fetch song data with artist name
+$sql = "SELECT s.id, s.song_title, a.artist_name, s.language, s.categories, s.release_date, s.mp3_upload, s.profile_picture_upload, s.background_picture_upload 
+        FROM songs s 
+        JOIN artist a ON s.artist_id = a.artist_id";
 $result = $conn->query($sql);
 
 // Check if query execution was successful
@@ -23,7 +25,6 @@ if ($result) {
 // Close connection
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,7 +61,7 @@ $conn->close();
                     <a href="Admin_artist_list.php" class="navbar-link">Artist List</a>
                     <a href="Admin_user_list.php" class="navbar-link">Users List</a>
                 </div>
-                <a href="index.php" class="logout">Logout</a> <!-- Replace with your logout page -->
+                <a href="index.php" class="logout">Logout</a>
             </div> 
         </aside>
         <main class="main-content">
@@ -89,7 +90,7 @@ $conn->close();
                         <tr>
                             <td><?php echo $song['id']; ?></td>
                             <td><?php echo $song['song_title']; ?></td>
-                            <td><?php echo $song['artist']; ?></td>
+                            <td><?php echo $song['artist_name']; ?></td>
                             <td><?php echo $song['language']; ?></td>
                             <td><?php echo $song['categories']; ?></td>
                             <td><?php echo $song['release_date']; ?></td>

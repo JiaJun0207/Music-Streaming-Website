@@ -54,7 +54,7 @@ $conn->close();
                     <span>IKUN MUSIC</span>
                 </div>
                 <div class="navbar-links-container">
-                    <a href="dashboard.php" class="navbar-link">Dashboard</a>
+                    <a href="Admin_dashboard.php" class="navbar-link">Dashboard</a>
                     <a href="Admin_playlist_list.php" class="navbar-link">Playlist List</a>
                     <a href="Admin_song_list.php" class="navbar-link">Song List</a>
                     <a href="Admin_edit_comment.php" class="navbar-link">Comment List</a>
