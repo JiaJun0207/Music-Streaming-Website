@@ -76,7 +76,7 @@
                 <input type="password" id="password" name="password" placeholder="********" required>
                 <label for="password_confirmation">Repeat password</label>
                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
-                <button type="button" onclick="sendOTP();">Send OTP</button>
+                <button type="button" onclick="sendOTP();" style="padding: 10px; border: none; border-radius: 5px; background-color: #6200ea; color: #fff; font-size: 16px; cursor: pointer; font-family: Poppins, sans-serif;">Send OTP</button>
             </form>
                 <p>Already a member? <a href="#" onclick="showLogin()">Log in</a></p>
             </div>
