@@ -27,14 +27,24 @@
             margin-bottom: 10px;
             text-align: center;
         }
-        .otp-popup input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
+        .otp-input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .otp-input-container input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.5em;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 1em;
-            box-sizing: border-box;
+            outline: none;
+            margin-right: 5px;
+        }
+        .otp-input-container input:focus {
+            border-color: #6200ea;
+            box-shadow: 0 0 5px rgba(98, 0, 234, 0.5);
         }
         .otp-popup button {
             display: block;
@@ -42,7 +52,7 @@
             padding: 10px;
             font-size: 1em;
             font-weight: bold;
-            color: black;
+            color: white;
             background-color: #6912db;
             border: none;
             border-radius: 5px;
@@ -51,6 +61,69 @@
         }
         .otp-popup button:hover {
             background-color: #b991ec;
+        }
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-top: 2px solid #6200ea;
+            border-radius: 50%;
+            animation: spin 0.5s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Toast Notification */
+        .toast {
+            visibility: hidden;
+            min-width: 300px;
+            margin-left: -150px;
+            background-color: #d4edda;
+            color: #155724;
+            text-align: left;
+            border-radius: 5px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+            animation: fadein 0.5s, fadeout 0.5s 3.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        .toast .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .toast .close {
+            margin-left: auto;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -66,18 +139,18 @@
                 <button id="login-btn" onclick="showLogin()">Log In</button>
             </div>
             <div id="signup-form" class="form-content">
-            <h2>Sign Up</h2>
-            <form id="signup-form" action="process_signup.php" method="post">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Your Name" required>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="hello@gmail.com" required>
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="********" required>
-                <label for="password_confirmation">Repeat password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
-                <button type="button" onclick="sendOTP();" style="padding: 10px; border: none; border-radius: 5px; background-color: #6200ea; color: #fff; font-size: 16px; cursor: pointer; font-family: Poppins, sans-serif;">Send OTP</button>
-            </form>
+                <h2>Sign Up</h2>
+                <form id="signup-form" action="process_signup.php" method="post">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="hello@gmail.com" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="********" required>
+                    <label for="password_confirmation">Repeat password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="********" required>
+                    <button type="button" onclick="sendOTP();" id="otp-button" style="padding: 10px; border: none; border-radius: 5px; background-color: #6200ea; color: #fff; font-size: 16px; cursor: pointer; font-family: Poppins, sans-serif;">Send OTP<span class="spinner" id="spinner"></span></button>
+                </form>
                 <p>Already a member? <a href="#" onclick="showLogin()">Log in</a></p>
             </div>
             <div id="login-form" class="form-content">
@@ -99,9 +172,23 @@
     <div id="otp-popup" class="otp-popup">
         <h2 style="color: black;">Enter OTP</h2>
         <form id="otp-form" onsubmit="verifyOTP(); return false;">
-            <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
-            <button type="submit" onclick="showLogin()">Verify OTP</button>
+            <div class="otp-input-container">
+                <input type="text" maxlength="1" oninput="moveToNext(this, 'otp-input-2')" id="otp-input-1" required>
+                <input type="text" maxlength="1" oninput="moveToNext(this, 'otp-input-3')" id="otp-input-2" required>
+                <input type="text" maxlength="1" oninput="moveToNext(this, 'otp-input-4')" id="otp-input-3" required>
+                <input type="text" maxlength="1" oninput="moveToNext(this, 'otp-input-5')" id="otp-input-4" required>
+                <input type="text" maxlength="1" oninput="moveToNext(this, 'otp-input-6')" id="otp-input-5" required>
+                <input type="text" maxlength="1" id="otp-input-6" required>
+            </div>
+            <button type="submit">Verify OTP</button>
         </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span class="icon"><i class="fas fa-check-circle"></i></span>
+        <span class="message"></span>
+        <span class="close" onclick="hideToast()">&times;</span>
     </div>
 
     <script>
@@ -119,37 +206,67 @@
         document.getElementById('login-btn').classList.add('active');
     }
 
+    function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.querySelector(".message").innerText = message;
+        toast.className = "toast show";
+        setTimeout(function(){ hideToast(); }, 4000); // Show toast for 4 seconds
+    }
+
+    function hideToast() {
+        var toast = document.getElementById("toast");
+        toast.className = toast.className.replace("show", "");
+    }
+
+    function moveToNext(current, nextFieldID) {
+        if (current.value.length >= current.maxLength) {
+            if (nextFieldID) {
+                document.getElementById(nextFieldID).focus();
+            }
+        }
+    }
+
     function sendOTP() {
-    let name = document.getElementById('name').value;
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-    let password_confirmation = document.getElementById('password_confirmation').value;
-    
-    // Validate inputs (simplified, add more validation as needed)
-    if (!name || !password || !password_confirmation) {
-        alert("All fields are required");
-        return;
-    }
-    if (password !== password_confirmation) {
-        alert("Passwords must match");
-        return;
-    }
-    
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        let password_confirmation = document.getElementById('password_confirmation').value;
+        let otpButton = document.getElementById('otp-button');
+        let spinner = document.getElementById('spinner');
         
-    // AJAX request to process_signup.php for database insertion
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', 'process_signup.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-            // Database insertion successful, now send OTP
-            sendOTPToEmail(email);
-            } else {
-            alert('Error: ' + xhr.responseText);
-                    }
+        // Validate inputs (simplified, add more validation as needed)
+        if (!name || !password || !password_confirmation) {
+            showToast("All fields are required");
+            return;
+        }
+        if (password !== password_confirmation) {
+            showToast("Passwords must match");
+            return;
+        }
+        
+        // Show loading spinner and disable button
+        otpButton.disabled = true;
+        spinner.style.display = 'inline-block';
+        otpButton.style.cursor = 'not-allowed';
+
+        // AJAX request to process_signup.php for database insertion
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'process_signup.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Database insertion successful, now send OTP
+                    sendOTPToEmail(email);
+                } else {
+                    showToast('Error: ' + xhr.responseText);
+                    // Hide loading spinner and enable button
+                    otpButton.disabled = false;
+                    spinner.style.display = 'none';
+                    otpButton.style.cursor = 'pointer';
                 }
-            };
+            }
+        };
         xhr.send('name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password));
     }
 
@@ -158,19 +275,49 @@
         xhr.open('POST', 'send_otp.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                alert(xhr.responseText.trim()); // Alert message from send_otp.php
-                document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+            if (xhr.readyState === 4) {
+                let otpButton = document.getElementById('otp-button');
+                let spinner = document.getElementById('spinner');
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    showToast(response.message); // Show toast message from send_otp.php
+                    if (response.status === 'success') {
+                        document.getElementById('otp-popup').style.display = 'block'; // Display OTP popup
+                    }
+                } else {
+                    showToast('Error: ' + xhr.responseText);
+                }
+                // Hide loading spinner and enable button
+                otpButton.disabled = false;
+                spinner.style.display = 'none';
+                otpButton.style.cursor = 'pointer';
             }
         };
         xhr.send('email=' + encodeURIComponent(email));
     }
 
-    function validateEmail(email) {
-        // Simplified email validation, adjust as per your requirements
-        return /\S+@\S+\.\S+/.test(email);
+    function verifyOTP() {
+        let otp = '';
+        for (let i = 1; i <= 6; i++) {
+            otp += document.getElementById(`otp-input-${i}`).value;
+        }
+        let email = document.getElementById('email').value;
+        
+        // Example of AJAX call to verify the OTP
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'verify_otp.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                let response = xhr.responseText;
+                showToast(response); // Show toast message from verify_otp.php
+                if (response.trim() === 'OTP verified') {
+                    document.getElementById('otp-popup').style.display = 'none'; // Hide OTP popup on success
+                }
+            }
+        };
+        xhr.send('otp=' + encodeURIComponent(otp) + '&email=' + encodeURIComponent(email));
     }
-
     </script>
 </body>
 </html>
