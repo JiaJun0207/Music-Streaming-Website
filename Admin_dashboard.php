@@ -24,7 +24,7 @@ if ($artistResult) {
 }
 
 // Fetch the count of playlists
-$playlistResult = $conn->query("SELECT COUNT(*) as count FROM playlists"); // Adjust the table name if necessary
+$playlistResult = $conn->query("SELECT COUNT(*) as count FROM playlist"); // Adjust the table name if necessary
 if ($playlistResult) {
     $playlistCount = $playlistResult->fetch_assoc()['count'];
 }
