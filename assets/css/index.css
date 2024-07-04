@@ -1,98 +1,68 @@
-body {
-    font-family: Poppins, sans-serif;
+/* Reset default margin and padding */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f9f9f9;
-    background-image: url(../pic/background.png);
+    box-sizing: border-box;
 }
+
+/* Basic styles for the container */
 .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-    max-width: 1200px;
-    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
+    font-family: 'Poppins', sans-serif;
 }
-.content {
-    max-width: 600px;
-}
-.logo-title {
+
+/* Styles for the artist header */
+.artist-header {
     display: flex;
-    align-items: flex-end; /* Align to the bottom */
-    gap: 20px;
+    align-items: center;
     margin-bottom: 20px;
 }
-.logo {
+
+.artist-header img {
     width: 150px;
-    margin-bottom: 10px; /* Add margin-bottom to adjust position */
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
 }
-.title {
+
+.artist-header h1 {
     font-size: 2.5em;
-    font-weight: bold;
+    margin: 0;
+}
+
+.artist-header p {
+    margin: 5px 0;
+}
+
+.artist-header a {
     color: #333;
-}
-.subtitle {
-    font-size: 1.2em;
-    color: #666;
-    margin-bottom: 40px;
-}
-.buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.buttons-horizontal {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-}
-.admin-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.admin-section-horizontal {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    border: 2px solid #333;
-    border-radius: 5px;
     text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    background-color: #fff;
-    transition: background-color 0.3s, color 0.3s;
+    transition: color 0.3s ease;
 }
-.btn:hover {
-    background-color: #333;
-    color: #fff;
-}
-.get-started {
-    padding: 10px 20px;
-    width: auto;
-}
-.get-started:hover {
-    background-color: white;
-    color: purple;
-    border: 2px solid purple;
-}
-.admin-link {
+
+.artist-header a:hover {
     color: #666;
 }
-.admin-link:hover {
-    color: #000;
+
+/* Styles for the song list */
+.song-list {
+    list-style: none;
+    padding: 0;
 }
-.animation {
-    width: 400px;
-    height: 400px;
+
+.song-list li {
+    margin: 10px 0;
+}
+
+.song-list a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.song-list a:hover {
+    color: #0056b3;
 }
