@@ -27,6 +27,36 @@ $result = $isLikedQuery->get_result();
 $likeStatus = $result->fetch_assoc()['count'] > 0;
 $isLikedQuery->close();
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['commentText'])) {
+        $commentText = $_POST['commentText'];
+        $result = addComment($conn, $songID, $userID, $commentText);
+
+        if ($result) {
+            header("Location: {$_SERVER['REQUEST_URI']}");
+            exit;
+        } else {
+            $error = "Error adding comment.";
+        }
+    } elseif (isset($_POST['like'])) {
+        if ($likeStatus) {
+            // Remove from Liked Songs playlist
+            $deleteQuery = $conn->prepare("DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?");
+            $deleteQuery->bind_param("ii", $userID, $songID);
+            $deleteQuery->execute();
+            $deleteQuery->close();
+            $likeStatus = false; // Update like status
+        } else {
+            // Add to Liked Songs playlist
+            $likeQuery = $conn->prepare("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)");
+            $likeQuery->bind_param("ii", $userID, $songID);
+            $likeQuery->execute();
+            $likeQuery->close();
+            $likeStatus = true; // Update like status
+        }
+    }
+}
+
 $comments = fetchComments($conn, $songID);
 mysqli_close($conn);
 ?>
@@ -130,7 +160,9 @@ mysqli_close($conn);
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
             <p><?php echo htmlspecialchars($song['artist_name']); ?></p> <!-- Updated to display artist_name -->
             <p><?php echo htmlspecialchars($song['categories']); ?></p>
-            <button class="like-button" id="like-button"><i class="far fa-heart"></i></button>
+            <form method="POST">
+                <button type="submit" name="like" class="like-button"><i class="far fa-heart"></i></button>
+            </form>
         </header>
         <main>
             <audio id="audio-player" controls>
@@ -181,58 +213,18 @@ mysqli_close($conn);
             toast.className = toast.className.replace("show", "");
         }
 
-        document.getElementById('like-button').addEventListener('click', function() {
-            const likeButton = this;
+        document.addEventListener("DOMContentLoaded", function() {
+            const likeButton = document.querySelector('.like-button');
 
-            fetch('like_song.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ songID: <?php echo $songID; ?> })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    likeButton.style.color = data.liked ? '#ff0000' : '#ccc';
-                    showToast(data.message);
+            likeButton.addEventListener('click', function() {
+                // Toggle like status visually
+                if (likeButton.style.color === 'rgb(255, 0, 0)') {
+                    likeButton.style.color = '#ccc';
                 } else {
-                    showToast(data.message);
-                }
-            });
-        });
-
-        document.getElementById('comment-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const commentText = document.getElementById('comment-text').value;
-
-            fetch('add_comment.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ songID: <?php echo $songID; ?>, commentText: commentText })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const commentList = document.getElementById('comment-list');
-                    const newComment = document.createElement('div');
-                    newComment.className = 'comment';
-                    newComment.innerHTML = `
-                        <div class="comment-header">
-                            <img src="${data.comment.profile_image}" alt="Profile Picture" class="profile-image">
-                            <p><strong>${data.comment.name}:</strong> ${data.comment.comment_text}</p>
-                        </div>
-                        <small>${data.comment.created_at}</small>
-                    `;
-                    commentList.insertBefore(newComment, commentList.firstChild);
-                    showToast(data.message);
-                } else {
-                    showToast(data.message);
+                    likeButton.style.color = '#ff0000';
                 }
             });
         });
     </script>
 </body>
-</html
+</html>
