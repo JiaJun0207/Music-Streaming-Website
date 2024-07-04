@@ -7,7 +7,7 @@ $conn = require __DIR__ . "/db_connection.php";
 $playlistId = $_GET['id'];
 
 // Fetch playlist data
-$sqlPlaylist = "SELECT * FROM playlists WHERE playlist_id = '$playlistId'";
+$sqlPlaylist = "SELECT * FROM playlist WHERE playlist_id = '$playlistId'";
 $resultPlaylist = $conn->query($sqlPlaylist);
 $playlist = $resultPlaylist->fetch_assoc();
 
