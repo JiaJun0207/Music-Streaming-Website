@@ -52,7 +52,7 @@
             padding: 10px;
             font-size: 1em;
             font-weight: bold;
-            color: black;
+            color: white;
             background-color: #6912db;
             border: none;
             border-radius: 5px;
