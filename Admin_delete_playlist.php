@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sqlDeleteSongs = "DELETE FROM playlist_songs WHERE playlist_id = '$playlistId'";
     $conn->query($sqlDeleteSongs);
     
-    $sql = "DELETE FROM playlists WHERE playlist_id = '$playlistId'";
+    $sql = "DELETE FROM playlist WHERE playlist_id = '$playlistId'";
     
     if ($conn->query($sql) === TRUE) {
         echo "Success";

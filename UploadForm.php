@@ -13,19 +13,21 @@ if (isset($_SESSION["user_id"])) {
     $stmt->close();
 }
 
-    // Handle the image path
-    if (!empty($profile_image)) {
-        // Check if the path starts with 'uploads/' or '../uploads/'
-        if (strpos($profile_image, 'uploads/') === 0) {
-            $image_path = $profile_image;
-        } elseif (strpos($profile_image, '../uploads/') === 0) {
-            $image_path = substr($profile_image, 3); // Remove the '../' prefix
-        } else {
-            $image_path = 'uploads/profile/' . $profile_image;
-        }
+if (!empty($profile_image)) {
+    if (strpos($profile_image, 'uploads/') === 0) {
+        $image_path = $profile_image;
+    } elseif (strpos($profile_image, '../uploads/') === 0) {
+        $image_path = substr($profile_image, 3);
     } else {
-        $image_path = 'assets/pic/default.jpg';
+        $image_path = 'uploads/profile/' . $profile_image;
     }
+} else {
+    $image_path = 'assets/pic/default.jpg';
+}
+
+// Fetch artist list
+$artists_sql = "SELECT artist_id, artist_name FROM artist";
+$artists_result = $conn->query($artists_sql);
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +39,6 @@ if (isset($_SESSION["user_id"])) {
     <link rel="stylesheet" href="assets/css/upload_song.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-</head>
     <style>
         .navbar-link:hover {
             color: #7700ff;
@@ -45,19 +46,65 @@ if (isset($_SESSION["user_id"])) {
         .navbar-link:hover i {
             color: #7700ff;
         }
-        /* Add this to your CSS file */
         #logout {
-            color: #ffffff; /* Default color */
-            transition: color 0.3s; /* Smooth transition for color change */
+            color: #ffffff;
+            transition: color 0.3s;
         }
-
         #logout:hover {
-            color: #ff0000; /* Red color on hover */
+            color: #ff0000;
         }
         #logout:hover .fas {
-            color: #ff0000; /* Red color for the icon on hover */
+            color: #ff0000;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 300px;
+            margin-left: -150px;
+            background-color: #d4edda;
+            color: #155724;
+            text-align: left;
+            border-radius: 5px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+            animation: fadein 0.5s, fadeout 0.5s 3.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        .toast .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .toast .close {
+            margin-left: auto;
+            cursor: pointer;
         }
     </style>
+</head>
 <body>
     <div class="container">
         <aside class="sidebar">
@@ -82,12 +129,16 @@ if (isset($_SESSION["user_id"])) {
         </aside>
         <main class="main-content">
             <h1>Upload a Song</h1>
-            <form id="uploadForm" action="Upload.php" method="POST" enctype="multipart/form-data">
+            <form id="uploadForm" enctype="multipart/form-data">
                 <label for="songTitle">Song Title<span class="required">*</span></label>
                 <input type="text" id="songTitle" name="songTitle" required>
 
-                <label for="artist">Artist<span class="required">*</span></label>
-                <input type="text" id="artist" name="artist" required>
+                <label for="artist_id">Artist<span class="required">*</span></label>
+                <select id="artist_id" name="artist_id" required>
+                    <?php while ($artist = $artists_result->fetch_assoc()): ?>
+                        <option value="<?php echo $artist['artist_id']; ?>"><?php echo htmlspecialchars($artist['artist_name']); ?></option>
+                    <?php endwhile; ?>
+                </select>
 
                 <label for="language">Language</label>
                 <select id="language" name="language">
@@ -112,10 +163,54 @@ if (isset($_SESSION["user_id"])) {
                 <label for="backgroundPictureUpload">Background Picture Upload</label>
                 <input type="file" id="backgroundPictureUpload" name="backgroundPictureUpload" accept="image/*">
 
-                <button type="submit" name="submit">Add Song</button>
+                <button type="submit" id="submitButton">Add Song</button>
             </form>
         </main>
     </div>
-    <!-- <script src="assets\js\upload_song.js"></script> -->
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span class="icon"><i class="fas fa-check-circle"></i></span>
+        <span class="message"></span>
+        <span class="close" onclick="hideToast()">&times;</span>
+    </div>
+
+    <script>
+    function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.querySelector(".message").innerText = message;
+        toast.className = "toast show";
+        setTimeout(function(){ hideToast(); }, 4000); // Show toast for 4 seconds
+    }
+
+    function hideToast() {
+        var toast = document.getElementById("toast");
+        toast.className = toast.className.replace("show", "");
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        let submitButton = document.getElementById('submitButton');
+        
+        // Show loading spinner and disable button
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Uploading...';
+
+        // AJAX request to Upload.php
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'Upload.php', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                showToast(xhr.responseText);
+                // Hide loading spinner and enable button
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Add Song';
+            }
+        };
+        xhr.send(formData);
+    });
+    </script>
 </body>
 </html>

@@ -6,7 +6,6 @@ $conn = require __DIR__ . "/db_connection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $playlistName = mysqli_real_escape_string($conn, $_POST['playlistName']);
-    $userId = 1; // Example user_id, replace with the actual user ID from your session or logic
     $imagePath = '';
 
     // Handle file upload
@@ -21,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $sql = "INSERT INTO playlists (playlist_name, user_id, playlist_image) VALUES ('$playlistName', '$userId', '$imagePath')";
+    $sql = "INSERT INTO playlist (playlist_name, playlist_image) VALUES ('$playlistName', '$imagePath')";
     
     if ($conn->query($sql) === TRUE) {
         header("Location: Admin_playlist_list.php");

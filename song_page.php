@@ -104,6 +104,53 @@ mysqli_close($conn);
             border-radius: 50%;
             margin-right: 10px;
         }
+        .toast {
+            visibility: hidden;
+            min-width: 300px;
+            margin-left: -150px;
+            background-color: #d4edda;
+            color: #155724;
+            text-align: left;
+            border-radius: 5px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+            animation: fadein 0.5s, fadeout 0.5s 3.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        .toast .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .toast .close {
+            margin-left: auto;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +158,7 @@ mysqli_close($conn);
         <header>
             <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Cover">
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
-            <p><?php echo htmlspecialchars($song['artist']); ?></p>
+            <p><?php echo htmlspecialchars($song['artist_name']); ?></p> <!-- Updated to display artist_name -->
             <p><?php echo htmlspecialchars($song['categories']); ?></p>
             <form method="POST">
                 <button type="submit" name="like" class="like-button"><i class="far fa-heart"></i></button>
@@ -145,7 +192,27 @@ mysqli_close($conn);
             </section>
         </main>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span class="icon"><i class="fas fa-check-circle"></i></span>
+        <span class="message"></span>
+        <span class="close" onclick="hideToast()">&times;</span>
+    </div>
+
     <script>
+        function showToast(message) {
+            var toast = document.getElementById("toast");
+            toast.querySelector(".message").innerText = message;
+            toast.className = "toast show";
+            setTimeout(function(){ hideToast(); }, 4000); // Show toast for 4 seconds
+        }
+
+        function hideToast() {
+            var toast = document.getElementById("toast");
+            toast.className = toast.className.replace("show", "");
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const likeButton = document.querySelector('.like-button');
 

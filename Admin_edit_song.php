@@ -12,8 +12,11 @@ if (!isset($_GET['id'])) {
 
 $song_id = $_GET['id'];
 
-// Fetch song data
-$sql = "SELECT * FROM songs WHERE id = ?";
+// Fetch song data with artist name
+$sql = "SELECT s.id, s.song_title, s.artist_id, a.artist_name, s.language, s.categories, s.release_date, s.mp3_upload, s.profile_picture_upload, s.background_picture_upload 
+        FROM songs s 
+        JOIN artist a ON s.artist_id = a.artist_id
+        WHERE s.id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $song_id);
 $stmt->execute();
@@ -25,14 +28,27 @@ if ($result->num_rows === 1) {
     exit("Song not found");
 }
 
+// Fetch all artists for dropdown list
+$sql_artists = "SELECT artist_id, artist_name FROM artist";
+$result_artists = $conn->query($sql_artists);
+$artists = [];
+if ($result_artists->num_rows > 0) {
+    while ($row = $result_artists->fetch_assoc()) {
+        $artists[] = $row;
+    }
+}
+
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialize variables to store form data
     $song_title = $_POST['song_title'];
-    $artist = $_POST['artist'];
+    $artist_id = $_POST['artist_id'];
     $language = $_POST['language'];
     $categories = $_POST['categories'];
     $release_date = $_POST['release_date'];
+    $mp3_upload = $song['mp3_upload'];
+    $profile_picture_upload = $song['profile_picture_upload'];
+    $background_picture_upload = $song['background_picture_upload'];
 
     // Check if a new MP3 file is uploaded
     if ($_FILES['mp3_upload']['error'] === UPLOAD_ERR_OK) {
@@ -47,11 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Failed to move uploaded file.";
             exit();
         }
-    } else {
-        $mp3_upload = $song['mp3_upload']; // Use existing MP3 if no new one uploaded
     }
 
-    // Check if a new profile image is uploaded (assuming you have profile and background images for songs)
+    // Check if a new profile image is uploaded
     if ($_FILES['profile_picture_upload']['error'] === UPLOAD_ERR_OK) {
         $image_name = $_FILES['profile_picture_upload']['name'];
         $temp_name = $_FILES['profile_picture_upload']['tmp_name'];
@@ -64,8 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Failed to move uploaded file.";
             exit();
         }
-    } else {
-        $profile_picture_upload = $song['profile_picture_upload']; // Use existing profile image if no new one uploaded
     }
 
     // Check if a new background image is uploaded
@@ -81,14 +93,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Failed to move uploaded file.";
             exit();
         }
-    } else {
-        $background_picture_upload = $song['background_picture_upload']; // Use existing background image if no new one uploaded
     }
 
     // Update song data in database
-    $sql = "UPDATE songs SET song_title=?, artist=?, language=?, categories=?, release_date=?, mp3_upload=?, profile_picture_upload=?, background_picture_upload=? WHERE id=?";
+    $sql = "UPDATE songs SET song_title=?, artist_id=?, language=?, categories=?, release_date=?, mp3_upload=?, profile_picture_upload=?, background_picture_upload=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssi", $song_title, $artist, $language, $categories, $release_date, $mp3_upload, $profile_picture_upload, $background_picture_upload, $song_id);
+    $stmt->bind_param("sissssssi", $song_title, $artist_id, $language, $categories, $release_date, $mp3_upload, $profile_picture_upload, $background_picture_upload, $song_id);
 
     if ($stmt->execute()) {
         // Song updated successfully
@@ -135,14 +145,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <main class="main-content">
             <h1>Edit Song</h1>
             <form id="editForm" action="Admin_edit_song.php?id=<?php echo $song_id; ?>" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="song_id" value="<?php echo $song['id']; ?>">
                 <div class="form-group">
                     <label for="song_title">Song Title *</label>
                     <input type="text" id="song_title" name="song_title" value="<?php echo $song['song_title']; ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="artist">Artist *</label>
-                    <input type="text" id="artist" name="artist" value="<?php echo $song['artist']; ?>" required>
+                    <label for="artist_id">Artist *</label>
+                    <select id="artist_id" name="artist_id" required>
+                        <?php foreach ($artists as $artist) : ?>
+                            <option value="<?php echo $artist['artist_id']; ?>" <?php echo ($artist['artist_id'] == $song['artist_id']) ? 'selected' : ''; ?>>
+                                <?php echo $artist['artist_name']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="language">Language *</label>

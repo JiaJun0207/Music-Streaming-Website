@@ -8,7 +8,7 @@ $conn = require __DIR__ . "/db_connection.php";
 $playlists = [];
 
 // Fetch playlist data
-$sql = "SELECT playlist_id, playlist_name, created_at, user_id, playlist_image FROM playlists";
+$sql = "SELECT playlist_id, playlist_name, created_at, playlist_image FROM playlist";
 $result = $conn->query($sql);
 
 // Check if query execution was successful
@@ -75,7 +75,6 @@ $conn->close();
                         <th>ID</th>
                         <th>Playlist Name</th>
                         <th>Created At</th>
-                        <th>User ID</th>
                         <th>Playlist Image</th>
                         <th>Action</th>
                     </tr>
@@ -86,7 +85,6 @@ $conn->close();
                             <td><?php echo $playlist['playlist_id']; ?></td>
                             <td><?php echo $playlist['playlist_name']; ?></td>
                             <td><?php echo $playlist['created_at']; ?></td>
-                            <td><?php echo $playlist['user_id']; ?></td>
                             <td>
                                 <?php if (!empty($playlist['playlist_image'])): ?>
                                     <?php
@@ -103,7 +101,7 @@ $conn->close();
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                    <?php if (empty($playlists)): ?>
+                    <?php if (empty($playlist)): ?>
                         <tr><td colspan="6">No playlists found</td></tr>
                     <?php endif; ?>
                 </tbody>

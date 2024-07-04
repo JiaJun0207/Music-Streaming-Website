@@ -6,16 +6,19 @@ include 'db_connection.php'; // Ensure correct path to db_connection.php
 $song = null;
 $comments = [];
 
-// Function to fetch song details
 function fetchSongDetails($conn, $songID) {
-    $songQuery = "SELECT * FROM Songs WHERE id = $songID";
-    $songResult = mysqli_query($conn, $songQuery);
+    $sql = "SELECT s.*, a.artist_name
+            FROM Songs s
+            JOIN artist a ON s.artist_id = a.artist_id
+            WHERE s.id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $songID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $song = $result->fetch_assoc();
+    $stmt->close();
 
-    if ($songResult && mysqli_num_rows($songResult) > 0) {
-        return mysqli_fetch_assoc($songResult);
-    } else {
-        return null;
-    }
+    return $song;
 }
 
 // Function to get profile image path
