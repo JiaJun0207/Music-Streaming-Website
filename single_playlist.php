@@ -6,15 +6,38 @@ include 'db_connection.php';
 $userID = $_SESSION["user_id"] ?? 1; // Ensure this is dynamically set based on session or user context
 
 // Get playlist ID from query string
-$playlistID = isset($_GET['playlist_id']) ? (int)$_GET['playlist_id'] : 0;
+$playlistID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Fetch playlist details
+if ($playlistID === 0) {
+    die('Invalid playlist ID');
+}
+
+// Initialize playlist variable
+$playlist = null;
+
+// Fetch playlist details from the `playlists` table
 $playlistQuery = $conn->prepare("SELECT * FROM playlists WHERE playlist_id = ?");
 $playlistQuery->bind_param("i", $playlistID);
 $playlistQuery->execute();
-$playlist = $playlistQuery->get_result()->fetch_assoc();
+$playlistResult = $playlistQuery->get_result();
 $playlistQuery->close();
 
+if ($playlistResult->num_rows > 0) {
+    $playlist = $playlistResult->fetch_assoc();
+} else {
+    // If not found in `playlists`, try the `playlist` table
+    $playlistQuery = $conn->prepare("SELECT * FROM playlist WHERE playlist_id = ?");
+    $playlistQuery->bind_param("i", $playlistID);
+    $playlistQuery->execute();
+    $playlistResult = $playlistQuery->get_result();
+    $playlistQuery->close();
+
+    if ($playlistResult->num_rows > 0) {
+        $playlist = $playlistResult->fetch_assoc();
+    }
+}
+
+// Check if playlist is found
 if (!$playlist) {
     die('Playlist not found');
 }
@@ -144,14 +167,6 @@ mysqli_close($conn);
 
         .song-artist {
             color: #666;
-        }
-
-        .song-duration {
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
         }
 
         .song-item a:hover .song-title {

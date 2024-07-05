@@ -38,7 +38,15 @@ $albums_sql = "SELECT a.artist_id, a.artist_name, a.artist_photo, COUNT(s.id) AS
 $albums_result = $conn->query($albums_sql);
 
 // Fetch songs
-$songs_result = $conn->query("SELECT id, song_title, profile_picture_upload FROM songs");
+$songs_sql = "SELECT id, song_title, profile_picture_upload FROM songs";
+$songs_result = $conn->query($songs_sql);
+
+// Fetch playlists
+$playlists_sql = "SELECT p.playlist_id, p.playlist_name, p.playlist_image, COUNT(sp.song_id) AS song_count 
+                  FROM playlist p 
+                  LEFT JOIN playlist_songs sp ON p.playlist_id = sp.playlist_id
+                  GROUP BY p.playlist_id";
+$playlists_result = $conn->query($playlists_sql);
 
 // Check if songs_result is valid before using fetch_assoc()
 if ($songs_result) {
@@ -112,7 +120,7 @@ if ($songs_result) {
             color: #ffffff; /* Change header color to white */
         }
 
-        .albums, .songs {
+        .albums, .songs, .playlists {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
@@ -120,7 +128,7 @@ if ($songs_result) {
             margin-bottom: 20px;
         }
 
-        .album, .song-card {
+        .album, .song-card, .playlist {
             background-color: #f9f9f9;
             padding: 10px;
             border-radius: 10px;
@@ -129,19 +137,19 @@ if ($songs_result) {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .album img, .song-card img {
+        .album img, .song-card img, .playlist img {
             width: 150px;
             height: 150px;
             border-radius: 5%;
             margin-bottom: 5px;
         }
 
-        .album span, .song span {
+        .album span, .song span, .playlist span {
             display: block;
             margin-bottom: 10px;
         }
 
-        .see-details, .listen {
+        .see-details, .listen, .view-playlist {
             text-decoration: none;
             color: #6200ea;
         }
@@ -277,6 +285,20 @@ if ($songs_result) {
                                 <span><?php echo htmlspecialchars($song['song_title']); ?></span>
                                 <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>" class="listen">Listen</a>
                             </div>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+            <!-- Playlists Section -->
+            <div class="content">
+                <div class="section-header">Recommended Playlists</div>
+                <div class="playlists">
+                    <?php while ($playlist = $playlists_result->fetch_assoc()): ?>
+                        <div class="playlist">
+                            <img src="<?php echo htmlspecialchars($playlist['playlist_image']); ?>" alt="Playlist Image">
+                            <span><?php echo htmlspecialchars($playlist['playlist_name']); ?></span>
+                            <span><?php echo htmlspecialchars($playlist['song_count']) . ' Songs'; ?></span>
+                            <a href="single_playlist.php?id=<?php echo urlencode($playlist['playlist_id']); ?>" class="view-playlist">View Playlist</a>
                         </div>
                     <?php endwhile; ?>
                 </div>
