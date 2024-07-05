@@ -1,4 +1,8 @@
 <?php
+header('Content-Type: application/json');
+
+$response = array('status' => 'error', 'message' => 'Failed to add artist');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Include database connection
     include 'db_connection.php';
@@ -10,8 +14,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $newArtistPhoto = null;
 
     // File upload handling for artist photo (optional)
-    if ($_FILES['newArtistPhoto']['name']) {
-        $newArtistPhoto = 'uploads/artist/' . basename($_FILES['newArtistPhoto']['name']);
+    if (isset($_FILES['newArtistPhoto']) && $_FILES['newArtistPhoto']['error'] == UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/artist/';
+        $newArtistPhoto = $uploadDir . basename($_FILES['newArtistPhoto']['name']);
         move_uploaded_file($_FILES['newArtistPhoto']['tmp_name'], $newArtistPhoto);
     }
 
@@ -20,12 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$newArtistName', '$newArtistEmail', '$newArtistYouTube', '$newArtistPhoto')";
     
     if (mysqli_query($conn, $sql)) {
-        echo "Artist added successfully.";
+        $artistId = mysqli_insert_id($conn); // Get the ID of the newly inserted artist
+        $response = array(
+            'status' => 'success',
+            'message' => 'Artist added successfully.',
+            'artist_id' => $artistId,
+            'artist_name' => $newArtistName
+        );
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        $response['message'] = 'Error: ' . mysqli_error($conn);
     }
 
     // Close connection
     mysqli_close($conn);
 }
+
+echo json_encode($response);
 ?>
