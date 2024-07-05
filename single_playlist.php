@@ -2,11 +2,16 @@
 session_start();
 include 'db_connection.php';
 
+// Check if the database connection was successful
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 // Simulate user ID (replace with actual session/user ID)
 $userID = $_SESSION["user_id"] ?? 1; // Ensure this is dynamically set based on session or user context
 
 // Get playlist ID from query string
-$playlistID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$playlistID = isset($_GET['playlist_id']) ? (int)$_GET['playlist_id'] : 0;
 
 if ($playlistID === 0) {
     die('Invalid playlist ID');
@@ -17,25 +22,31 @@ $playlist = null;
 
 // Fetch playlist details from the `playlists` table
 $playlistQuery = $conn->prepare("SELECT * FROM playlists WHERE playlist_id = ?");
+if (!$playlistQuery) {
+    die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+}
 $playlistQuery->bind_param("i", $playlistID);
 $playlistQuery->execute();
 $playlistResult = $playlistQuery->get_result();
-$playlistQuery->close();
 
 if ($playlistResult->num_rows > 0) {
     $playlist = $playlistResult->fetch_assoc();
 } else {
     // If not found in `playlists`, try the `playlist` table
     $playlistQuery = $conn->prepare("SELECT * FROM playlist WHERE playlist_id = ?");
+    if (!$playlistQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $playlistQuery->bind_param("i", $playlistID);
     $playlistQuery->execute();
     $playlistResult = $playlistQuery->get_result();
-    $playlistQuery->close();
 
     if ($playlistResult->num_rows > 0) {
         $playlist = $playlistResult->fetch_assoc();
     }
 }
+
+$playlistQuery->close();
 
 // Check if playlist is found
 if (!$playlist) {
@@ -54,6 +65,9 @@ if ($isLikedSongs) {
         JOIN artist ON songs.artist_id = artist.artist_id
         WHERE liked_songs.user_id = ?
     ");
+    if (!$songsQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $songsQuery->bind_param("i", $userID);
 } else {
     $songsQuery = $conn->prepare("
@@ -63,6 +77,9 @@ if ($isLikedSongs) {
         JOIN artist ON songs.artist_id = artist.artist_id
         WHERE playlist_songs.playlist_id = ?
     ");
+    if (!$songsQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $songsQuery->bind_param("i", $playlistID);
 }
 
