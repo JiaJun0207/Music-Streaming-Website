@@ -312,21 +312,38 @@ $artists_result = $conn->query($artists_sql);
     });
 
     document.getElementById('newArtistForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        let formData = new FormData(this);
+    let formData = new FormData(this);
 
-        // AJAX request to add new artist
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'AddArtist.php', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                showToast(xhr.responseText);
+    // AJAX request to add new artist
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', 'AddArtist.php', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            let response = JSON.parse(xhr.responseText);
+
+            if (response.status === 'success') {
+                // Update the artist dropdown list
+                let artistSelect = document.getElementById('artist_id');
+                let newOption = document.createElement('option');
+                newOption.value = response.artist_id;
+                newOption.textContent = response.artist_name;
+                artistSelect.appendChild(newOption);
+
+                // Show success message
+                showToast(response.message);
+
+                // Close the popup
                 closePopup();
+            } else {
+                // Show error message
+                showToast(response.message);
             }
-        };
-        xhr.send(formData);
-    });
+        }
+    };
+    xhr.send(formData);
+});
     </script>
 </body>
 </html>
