@@ -25,17 +25,19 @@ $isLikedSongs = ($playlist['playlist_name'] === 'Liked Songs');
 // Fetch songs in the playlist
 if ($isLikedSongs) {
     $songsQuery = $conn->prepare("
-        SELECT songs.id, songs.song_title, songs.artist
+        SELECT songs.id, songs.song_title, artist.artist_name
         FROM liked_songs 
         JOIN songs ON liked_songs.song_id = songs.id 
+        JOIN artist ON songs.artist_id = artist.artist_id
         WHERE liked_songs.user_id = ?
     ");
     $songsQuery->bind_param("i", $userID);
 } else {
     $songsQuery = $conn->prepare("
-        SELECT songs.id, songs.song_title, songs.artist
+        SELECT songs.id, songs.song_title, artist.artist_name
         FROM playlist_songs 
         JOIN songs ON playlist_songs.song_id = songs.id 
+        JOIN artist ON songs.artist_id = artist.artist_id
         WHERE playlist_songs.playlist_id = ?
     ");
     $songsQuery->bind_param("i", $playlistID);
@@ -160,7 +162,7 @@ mysqli_close($conn);
                     <li class="song-item">
                         <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>">
                             <span class="song-title"><?php echo htmlspecialchars($song['song_title']); ?></span>
-                            <span class="song-artist"><?php echo htmlspecialchars($song['artist']); ?></span>
+                            <span class="song-artist"><?php echo htmlspecialchars($song['artist_name']); ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
