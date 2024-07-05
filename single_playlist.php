@@ -73,6 +73,18 @@ mysqli_close($conn);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
 
         .playlist-header {
@@ -149,6 +161,7 @@ mysqli_close($conn);
 </head>
 <body>
     <div class="playlist-container">
+        <button class="close-button" onclick="goBack()">&times;</button>
         <div class="playlist-header">
             <img src="<?php echo htmlspecialchars($playlist['playlist_image']) ?: 'assets/pic/default.png'; ?>" alt="Playlist Image" class="playlist-image">
             <div class="playlist-details">
@@ -171,5 +184,11 @@ mysqli_close($conn);
             <?php endif; ?>
         </ul>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>
