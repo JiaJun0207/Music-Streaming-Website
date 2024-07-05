@@ -221,6 +221,101 @@ if ($songs_result) {
             background-color: #0072ff;
             color: #ffffff;
         }
+
+        /* Drawer styles */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #333;
+            color: #fff;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .drawer-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drawer-content li {
+            margin-bottom: 10px;
+        }
+
+        .drawer-content li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .drawer-content li a:hover {
+            text-decoration: underline;
+        }
+
+        .drawer-content h4 {
+            color: #ff0000;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            background-color: #444;
+            padding: 15px;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #drawer-title {
+            margin: 0;
+        }
+
+        #close-drawer-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .drawer-content {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* Button to toggle drawer */
+        #drawer-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6200ea;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+
+        #drawer-button:hover {
+            background-color: #3700b3;
+        }
+
+        #drawer-button.hide {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -303,18 +398,44 @@ if ($songs_result) {
                     <?php endwhile; ?>
                 </div>
             </div>
-            <div class="trending">
-                <h1>Popular and Trending</h1>
-                <ul>
-                    <?php while ($trending = $trending_result->fetch_assoc()): ?>
-                        <li><a href="song_page.php?id=<?php echo $trending['id']; ?>"><?php echo htmlspecialchars($trending['song_title']) . ' - ' . htmlspecialchars($trending['artist_name']); ?></a></li>
-                        <hr>
-                    <?php endwhile; ?>
-                    <h4 id="ads">Upload your production and become the next Trending! 🥳 </h4>
-                </ul>
-            </div>
         </div>
     </div>
+
+    <!-- Button to toggle drawer -->
+    <button id="drawer-button" onclick="toggleDrawer()">☰ Trending</button>
+
+    <!-- Drawer for Popular and Trending -->
+    <div id="trending-drawer" class="drawer">
+        <div class="drawer-header">
+            <span id="drawer-title">Popular and Trending</span>
+            <button id="close-drawer-button" onclick="toggleDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <ul>
+                <?php while ($trending = $trending_result->fetch_assoc()): ?>
+                    <li><a href="song_page.php?id=<?php echo $trending['id']; ?>"><?php echo htmlspecialchars($trending['song_title']) . ' - ' . htmlspecialchars($trending['artist_name']); ?></a></li>
+                    <hr>
+                <?php endwhile; ?>
+            </ul>
+            <h4 id="ads" style="color: white;">Upload your production and become the next Trending! 🥳 </h4>
+        </div>
+    </div>
+
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('trending-drawer');
+            const drawerButton = document.getElementById('drawer-button');
+            const closeButton = document.getElementById('close-drawer-button');
+
+            if (drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                drawerButton.classList.remove('hide');
+            } else {
+                drawer.classList.add('open');
+                drawerButton.classList.add('hide');
+            }
+        }
+    </script>
 </body>
 </html>
 
