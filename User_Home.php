@@ -84,35 +84,16 @@ if ($songs_result) {
 
         #logout:hover .fas {
             color: #ff0000;
-        }
-
-        /* Customize scrollbar */
-        body::-webkit-scrollbar {
-            width: 8px; /* Set the width of the scrollbar */
-        }
-
-        body::-webkit-scrollbar-track {
-            background: #f1f1f1; /* Background of the scrollbar track */
-        }
-
-        body::-webkit-scrollbar-thumb {
-            background-color: #888; /* Color of the scrollbar thumb */
-            border-radius: 10px; /* Rounded corners */
-            border: 2px solid #f1f1f1; /* Space around the thumb */
-        }
-
-        body::-webkit-scrollbar-thumb:hover {
-            background-color: #555; /* Color of the scrollbar thumb on hover */
-        }
-
+        }  
+        
         .main-content {
             padding: 20px;
-            width: calc(100% - 250px);
+            width: calc(100%-90px);
             display: flex;
             flex-direction: column;
             gap: 20px;
             margin-left: 40px;
-            margin-right: 80px;
+            margin-right: 20px;
         }
 
         .section-header {
@@ -161,7 +142,7 @@ if ($songs_result) {
             background-color: #007bff;
             color: white;
             text-decoration: none;
-            padding: 5px 10px;
+            padding: 5px 75px;
             border-radius: 5px;
         }
 
@@ -175,12 +156,13 @@ if ($songs_result) {
             align-items: center;
             background: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
             color: white;
-            padding: 20px;
+            padding: 10px;
+            padding-left: 15px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-left: 240px;
             margin-right: 130px;
-            margin-top: 20px;
+            margin-top: 0px;
         }
 
         .upload-banner img {
@@ -223,10 +205,11 @@ if ($songs_result) {
             background-color: #0072ff;
             color: #ffffff;
         }
+
         .content-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 0px;
         }
 
         .content-section {
@@ -236,7 +219,7 @@ if ($songs_result) {
 
         .scroll-container {
             display: flex;
-            gap: 20px;
+            gap: 10px;
         }
 
         .album, .song-card, .playlist {
@@ -246,12 +229,28 @@ if ($songs_result) {
 
         .album img, .song-card img, .playlist img {
             width: 100%;
-            height: 240px;
+            height: 200px;
         }
 
         .section-header {
             font-size: 1.5em;
             margin-bottom: 10px;
+        }
+
+        .action-link {
+            display: inline-block;
+            padding: 8px 60px;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #007BFF; 
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .action-link:hover {
+            background-color: #0056b3;
         }
 
         /* Drawer styles */
@@ -385,53 +384,53 @@ if ($songs_result) {
         </div>
         <div class="content-wrapper">
     <!-- Albums Section -->
-    <div class="content-section">
-        <div class="section-header">Recommended Artist</div>
-        <div class="albums scroll-container">
-            <?php while ($album = $albums_result->fetch_assoc()): ?>
-                <div class="album">
-                    <img src="<?php echo htmlspecialchars($album['artist_photo']); ?>" alt="Artist Image">
-                    <span><?php echo htmlspecialchars($album['artist_name']); ?></span>
-                    <span><?php echo htmlspecialchars($album['song_count']) . ' Songs'; ?></span>
-                    <a href="artist_home.php?artist_id=<?php echo urlencode($album['artist_id']); ?>" class="see-details">See Details</a>
-                </div>
-            <?php endwhile; ?>
-        </div>
-    </div>
-    <!-- Songs Section -->
-    <div class="content-section">
-        <div class="section-header">Recommended Songs</div>
-        <div class="songs scroll-container">
-            <?php
-            // Assuming $songs_result is still valid here and has been reset if needed.
-            $songs_result->data_seek(0); // Reset result set pointer if needed
-            while ($song = $songs_result->fetch_assoc()): ?>
-                <div class="song-card">
-                    <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Image">
-                    <div class="song">
-                        <span><?php echo htmlspecialchars($song['song_title']); ?></span>
-                        <span><?php echo htmlspecialchars($song['artist_name']); ?></span>
-                        <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>" class="listen">Listen</a>
+        <div class="content-section">
+            <div class="section-header">Recommended Artist</div>
+            <div class="albums scroll-container">
+                <?php while ($album = $albums_result->fetch_assoc()): ?>
+                    <div class="album">
+                        <img src="<?php echo htmlspecialchars($album['artist_photo']); ?>" alt="Artist Image">
+                        <span><?php echo htmlspecialchars($album['artist_name']); ?></span>
+                        <span><?php echo htmlspecialchars($album['song_count']) . ' Songs'; ?></span>
+                        <a href="artist_home.php?artist_id=<?php echo urlencode($album['artist_id']); ?>" class="action-link">See Details</a>
                     </div>
-                </div>
-            <?php endwhile; ?>
+                <?php endwhile; ?>
+            </div>
+        </div>
+        <!-- Songs Section -->
+        <div class="content-section">
+            <div class="section-header">Recommended Songs</div>
+            <div class="songs scroll-container">
+                <?php
+                // Assuming $songs_result is still valid here and has been reset if needed.
+                $songs_result->data_seek(0); // Reset result set pointer if needed
+                while ($song = $songs_result->fetch_assoc()): ?>
+                    <div class="song-card">
+                        <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Image">
+                        <div class="song">
+                            <span><?php echo htmlspecialchars($song['song_title']); ?></span>
+                            <span><?php echo htmlspecialchars($song['artist_name']); ?></span>
+                            <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>" class="action-link">Listen</a>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </div>
+        <!-- Playlists Section -->
+        <div class="content-section">
+            <div class="section-header">Recommended Playlists</div>
+            <div class="playlists scroll-container">
+                <?php while ($playlist = $playlists_result->fetch_assoc()): ?>
+                    <div class="playlist">
+                        <img src="<?php echo htmlspecialchars($playlist['playlist_image']); ?>" alt="Playlist Image">
+                        <span><?php echo htmlspecialchars($playlist['playlist_name']); ?></span>
+                        <span><?php echo htmlspecialchars($playlist['song_count']) . ' Songs'; ?></span>
+                        <a href="single_playlist.php?id=<?php echo urlencode($playlist['playlist_id']); ?>" class="action-link">View Playlist</a>
+                    </div>
+                <?php endwhile; ?>
+            </div>
         </div>
     </div>
-    <!-- Playlists Section -->
-    <div class="content-section">
-        <div class="section-header">Recommended Playlists</div>
-        <div class="playlists scroll-container">
-            <?php while ($playlist = $playlists_result->fetch_assoc()): ?>
-                <div class="playlist">
-                    <img src="<?php echo htmlspecialchars($playlist['playlist_image']); ?>" alt="Playlist Image">
-                    <span><?php echo htmlspecialchars($playlist['playlist_name']); ?></span>
-                    <span><?php echo htmlspecialchars($playlist['song_count']) . ' Songs'; ?></span>
-                    <a href="single_playlist.php?id=<?php echo urlencode($playlist['playlist_id']); ?>" class="view-playlist">View Playlist</a>
-                </div>
-            <?php endwhile; ?>
-        </div>
-    </div>
-</div>
 
     <!-- Button to toggle drawer -->
     <button id="drawer-button" onclick="toggleDrawer()">☰ Trending</button>
