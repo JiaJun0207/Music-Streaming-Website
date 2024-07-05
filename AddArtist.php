@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // File upload handling for artist photo (optional)
     if ($_FILES['newArtistPhoto']['name']) {
-        $newArtistPhoto = 'uploads/artists/' . basename($_FILES['newArtistPhoto']['name']);
+        $newArtistPhoto = 'uploads/artist/' . basename($_FILES['newArtistPhoto']['name']);
         move_uploaded_file($_FILES['newArtistPhoto']['tmp_name'], $newArtistPhoto);
     }
 
