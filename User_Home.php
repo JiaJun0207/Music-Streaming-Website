@@ -37,8 +37,10 @@ $albums_sql = "SELECT a.artist_id, a.artist_name, a.artist_photo, COUNT(s.id) AS
                GROUP BY a.artist_id";
 $albums_result = $conn->query($albums_sql);
 
-// Fetch songs
-$songs_sql = "SELECT id, song_title, profile_picture_upload FROM songs";
+// Fetch songs with artist names
+$songs_sql = "SELECT s.id, s.song_title, s.profile_picture_upload, a.artist_name
+              FROM songs s
+              JOIN artist a ON s.artist_id = a.artist_id";
 $songs_result = $conn->query($songs_sql);
 
 // Fetch playlists
@@ -378,6 +380,7 @@ if ($songs_result) {
                             <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Image">
                             <div class="song">
                                 <span><?php echo htmlspecialchars($song['song_title']); ?></span>
+                                <span><?php echo htmlspecialchars($song['artist_name']); ?></span>
                                 <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>" class="listen">Listen</a>
                             </div>
                         </div>
