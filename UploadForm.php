@@ -103,6 +103,70 @@ $artists_result = $conn->query($artists_sql);
             margin-left: auto;
             cursor: pointer;
         }
+        .popup-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1002;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        .popup-form h2 {
+            margin-top: 0;
+        }
+        .popup-form label {
+            display: block;
+            margin-top: 10px;
+        }
+        .popup-form input[type="text"],
+        .popup-form input[type="email"],
+        .popup-form input[type="url"],
+        .popup-form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        .popup-form button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #7700ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        .popup-form button:hover {
+            background-color: #2980b9;
+        }
+        .popup-form .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            color: black;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
     </style>
 </head>
 <body>
@@ -140,8 +204,7 @@ $artists_result = $conn->query($artists_sql);
                     <?php endwhile; ?>
                 </select>
 
-                <label for="newArtist">Or Add New Artist</label>
-                <input type="text" id="newArtist" name="newArtist">
+                <button type="button" onclick="openPopup()">Add New Artist</button>
 
                 <label for="language">Language</label>
                 <select id="language" name="language">
@@ -171,6 +234,29 @@ $artists_result = $conn->query($artists_sql);
         </main>
     </div>
 
+    <!-- Popup Form for New Artist -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-form" id="popupForm">
+        <button class="close-button" onclick="closePopup()">&times;</button>
+        <h2>Add New Artist</h2>
+        <form id="newArtistForm">
+            <label for="newArtistName">Artist Name<span class="required">*</span></label>
+            <input type="text" id="newArtistName" name="newArtistName" required>
+
+            <label for="newArtistEmail">Artist Email</label>
+            <input type="email" id="newArtistEmail" name="newArtistEmail">
+
+            <label for="newArtistYouTube">Artist YouTube Link</label>
+            <input type="url" id="newArtistYouTube" name="newArtistYouTube">
+
+            <label for="newArtistPhoto">Artist Photo</label>
+            <input type="file" id="newArtistPhoto" name="newArtistPhoto" accept="image/*">
+
+            <button type="submit">Add Artist</button>
+            <button type="button" onclick="closePopup()">Cancel</button>
+        </form>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">
         <span class="icon"><i class="fas fa-check-circle"></i></span>
@@ -189,6 +275,16 @@ $artists_result = $conn->query($artists_sql);
     function hideToast() {
         var toast = document.getElementById("toast");
         toast.className = toast.className.replace("show", "");
+    }
+
+    function openPopup() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popupForm").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popupForm").style.display = "none";
     }
 
     document.getElementById('uploadForm').addEventListener('submit', function(event) {
@@ -210,6 +306,23 @@ $artists_result = $conn->query($artists_sql);
                 // Hide loading spinner and enable button
                 submitButton.disabled = false;
                 submitButton.innerHTML = 'Add Song';
+            }
+        };
+        xhr.send(formData);
+    });
+
+    document.getElementById('newArtistForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+
+        // AJAX request to add new artist
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'AddArtist.php', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                showToast(xhr.responseText);
+                closePopup();
             }
         };
         xhr.send(formData);
