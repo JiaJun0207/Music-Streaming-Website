@@ -358,8 +358,8 @@ if ($songs_result) {
         <div class="navbar-links-container">
             <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
             <a href="user_playlist.php" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
-            <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
+            <a href="About_Us.html" class="navbar-link"><i class="fas fa-info-circle"></i> About Us</a>
             <a href="UploadForm.php" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
             <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>

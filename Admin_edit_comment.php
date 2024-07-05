@@ -25,6 +25,20 @@ function fetchComments($conn) {
     return $comments;
 }
 
+// Function to delete a comment
+function deleteComment($conn, $comment_id) {
+    $deleteQuery = "DELETE FROM Comments WHERE id = ?";
+    $stmt = $conn->prepare($deleteQuery);
+    $stmt->bind_param("i", $comment_id);
+    $stmt->execute();
+}
+
+// Check if a delete request has been made
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+    $comment_id = $_POST['comment_id'];
+    deleteComment($conn, $comment_id);
+}
+
 $comments = fetchComments($conn);
 ?>
 
@@ -57,7 +71,6 @@ $comments = fetchComments($conn);
         </aside>
         <main class="main-content">
             <h1>Admin Comments Page</h1>
-            <button class="add-new">Add New</button>
             <table>
                 <thead>
                     <tr>

@@ -85,6 +85,9 @@ mysqli_close($conn);
         .container {
             background-color: rgba(255, 255, 255, 0.8);
             position: relative;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .close-button {
             position: absolute;
@@ -162,6 +165,57 @@ mysqli_close($conn);
             margin-left: auto;
             cursor: pointer;
         }
+        .audio-player {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .audio-controls {
+            display: flex;
+            align-items: center;
+        }
+        .audio-controls button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 0 10px;
+            color: #333;
+        }
+        .audio-progress {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+        .audio-progress input {
+            width: 100%;
+        }
+        .audio-time {
+            display: flex;
+            justify-content: space-between;
+            width: 50px;
+            font-size: 14px;
+            color: #666;
+        }
+        .volume-control {
+            display: flex;
+            align-items: center;
+        }
+        .volume-control input {
+            width: 100px;
+            margin-left: 10px;
+        }
+        .download-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -170,14 +224,32 @@ mysqli_close($conn);
         <header>
             <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Cover">
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
-            <p><?php echo htmlspecialchars($song['artist_name']); ?></p> <!-- Updated to display artist_name -->
+            <p><?php echo htmlspecialchars($song['artist_name']); ?></p>
             <p><?php echo htmlspecialchars($song['categories']); ?></p>
             <form method="POST">
                 <button type="submit" name="like" class="like-button"><i class="far fa-heart"></i></button>
             </form>
         </header>
         <main>
-            <audio id="audio-player" controls>
+            <div class="audio-player">
+                <div class="audio-controls">
+                    <button onclick="togglePlayPause()"><i id="play-pause-icon" class="fas fa-play"></i></button>
+                </div>
+                <div class="audio-progress">
+                    <input type="range" id="progress-bar" value="0" max="100">
+                </div>
+                <div class="audio-time">
+                    <span id="current-time">00:00</span>
+                </div>
+                <div class="volume-control">
+                    <i class="fas fa-volume-up"></i>
+                    <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="0.4">
+                </div>
+                <a href="<?php echo htmlspecialchars($song['mp3_upload']); ?>" download class="download-button">
+                    <i class="fas fa-download"></i>
+                </a>
+            </div>
+            <audio id="audio-player" volume="0.4">
                 <source src="<?php echo htmlspecialchars($song['mp3_upload']); ?>" type="audio/mp3">
                 Your browser does not support the audio element.
             </audio>
@@ -213,11 +285,55 @@ mysqli_close($conn);
     </div>
 
     <script>
+        const audioPlayer = document.getElementById('audio-player');
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeElem = document.getElementById('current-time');
+        const volumeBar = document.getElementById('volume-bar');
+
+        audioPlayer.volume = 0.4;
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.value = progress;
+            currentTimeElem.textContent = formatTime(audioPlayer.currentTime);
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            playPauseIcon.className = 'fas fa-play';
+            progressBar.value = 0;
+            currentTimeElem.textContent = formatTime(0);
+        });
+
+        progressBar.addEventListener('input', () => {
+            audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+        });
+
+        volumeBar.addEventListener('input', () => {
+            audioPlayer.volume = volumeBar.value;
+        });
+
+        function togglePlayPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseIcon.className = 'fas fa-pause';
+            } else {
+                audioPlayer.pause();
+                playPauseIcon.className = 'fas fa-play';
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
         function showToast(message) {
             var toast = document.getElementById("toast");
             toast.querySelector(".message").innerText = message;
             toast.className = "toast show";
-            setTimeout(function(){ hideToast(); }, 4000); // Show toast for 4 seconds
+            setTimeout(function(){ hideToast(); }, 4000);
         }
 
         function hideToast() {
@@ -233,7 +349,6 @@ mysqli_close($conn);
             const likeButton = document.querySelector('.like-button');
 
             likeButton.addEventListener('click', function() {
-                // Toggle like status visually
                 if (likeButton.style.color === 'rgb(255, 0, 0)') {
                     likeButton.style.color = '#ccc';
                 } else {
