@@ -119,7 +119,7 @@
                 <a href="Login.php" class="btn get-started">Get Started</a>
                 <div class="admin-section-horizontal">
                     <p class="admin-link">Are You An Admin?</p>
-                    <a href="admin_login.html" class="btn">Click Here For Admin Login</a>
+                    <a href="admin_login.php" class="btn">Click Here For Admin Login</a>
                 </div>
             </div>
         </div>

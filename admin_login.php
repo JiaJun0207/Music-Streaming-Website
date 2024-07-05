@@ -1,52 +1,24 @@
 <?php
 session_start();
 
-// Include database connection
-$conn = require_once 'db_connection.php'; // Adjust path as necessary
-
-// Initialize variables for storing login status
-$email = '';
-$password = '';
 $login_error = '';
 
-// Process login form submission
+// Define hardcoded admin credentials
+$admin_username = "admin";
+$admin_password = password_hash("admin@123", PASSWORD_DEFAULT); // Hashed password
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $email = $_POST['email'];
+    $username = $_POST['name'];
     $password = $_POST['password'];
 
-    // Validate and sanitize input (not shown here for brevity)
-
-    // Query to check if the user exists with the provided credentials
-    $sql = "SELECT admin_id, admin_email, admin_password FROM admins WHERE admin_email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-        // Verify password
-        if (password_verify($password, $row['admin_password'])) {
-            // Password is correct, start a session
-            $_SESSION['admin_id'] = $row['admin_id'];
-            $_SESSION['admin_email'] = $row['admin_email'];
-            
-            // Redirect to dashboard or another authenticated page
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            // Password is incorrect
-            $login_error = "Invalid password. Please try again.";
-        }
+    // Verify admin credentials
+    if ($username === $admin_username && password_verify($password, $admin_password)) {
+        $_SESSION['admin_id'] = 1; // Example admin ID
+        header("Location: Admin_dashboard.php");
+        exit();
     } else {
-        // User with provided email not found
-        $login_error = "User not found. Please check your credentials.";
+        $login_error = 'Invalid username or password.';
     }
-
-    // Close statement and connection
-    $stmt->close();
-    $conn->close();
 }
 ?>
 
@@ -55,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKUN - Sign Up & Login</title>
+    <title>IKUN - Admin Login</title>
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -74,21 +46,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div id="login-form" class="form-content">
                 <h2>Admin Login</h2>
                 <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" placeholder="hello@gmail.com" required>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Admin Name" required>
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="********" required>
-                    <button type="submit">Log In</button>
+                    <button type="submit" style="font-family: Poppins;">Log In</button>
                     <?php if (!empty($login_error)) : ?>
                         <p class="error-message"><?php echo $login_error; ?></p>
                     <?php endif; ?>
                 </form>
-                
             </div>
         </div>
     </div>
     <script>
-
         function showLogin() {
             document.getElementById('signup-form').style.display = 'none';
             document.getElementById('login-form').style.display = 'block';
