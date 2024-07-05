@@ -49,22 +49,6 @@ body {
     font-weight: bold;
 }
 
-.navbar-coins {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.navbar-coins img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.navbar-coins span {
-    font-size: 18px;
-}
-
 .navbar-links-container {
     display: flex;
     flex-direction: column;
@@ -77,10 +61,6 @@ body {
     font-size: 18px;
     padding: 15px 20px;
     transition: background-color 0.3s;
-}
-
-.navbar-link:hover {
-    background-color: #33334d;
 }
 
 .navbar-user {

@@ -178,10 +178,6 @@ function uploadImage($imagePath) {
             transition: background-color 0.3s;
         }
 
-        .navbar-link:hover {
-            background-color: #33334d;
-        }
-
         .navbar-user {
             display: flex;
             align-items: center;
@@ -266,6 +262,11 @@ function uploadImage($imagePath) {
         #logout:hover {
             color: #ff0000;
         }
+
+        #logout:hover .fas {
+            color: #ff0000; /* Red color for the icon on hover */
+        }
+        
         .navbar-link:hover {
             color: #7700ff;
         }
@@ -281,7 +282,7 @@ function uploadImage($imagePath) {
             <span>IKUN MUSIC</span>
         </div>
         <div class="navbar-links-container">
-            <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
+        <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
             <a href="user_playlist.php" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
             <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
