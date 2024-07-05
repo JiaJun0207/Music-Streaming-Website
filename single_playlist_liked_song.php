@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 $userID = $_SESSION["user_id"] ?? 1; // Ensure this is dynamically set based on session or user context
 
 // Get playlist ID from query string
-$playlistID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$playlistID = isset($_GET['playlist_id']) ? (int)$_GET['playlist_id'] : 0;
 
 if ($playlistID === 0) {
     die('Invalid playlist ID');

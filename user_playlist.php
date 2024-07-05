@@ -302,7 +302,7 @@ function uploadImage($imagePath) {
                     <?php foreach ($playlists as $playlist): ?>
                         <li class="playlist-item">
                             <img src="<?php echo htmlspecialchars($playlist['playlist_image']) ?: 'assets/pic/default_cover.jpg'; ?>" alt="<?php echo htmlspecialchars($playlist['playlist_name']); ?>">
-                            <a href="single_playlist.php?playlist_id=<?php echo htmlspecialchars($playlist['playlist_id']); ?>">
+                            <a href="single_playlist_liked_song.php?playlist_id=<?php echo htmlspecialchars($playlist['playlist_id']); ?>">
                                 <?php echo htmlspecialchars($playlist['playlist_name']); ?>
                             </a>
                             <span>By <?php echo htmlspecialchars($name); ?></span>

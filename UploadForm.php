@@ -132,12 +132,16 @@ $artists_result = $conn->query($artists_sql);
                 <label for="songTitle">Song Title<span class="required">*</span></label>
                 <input type="text" id="songTitle" name="songTitle" required>
 
-                <label for="artist_id">Artist<span class="required">*</span></label>
-                <select id="artist_id" name="artist_id" required>
+                <label for="artist_id">Select Artist</label>
+                <select id="artist_id" name="artist_id">
+                    <option value="">Select an artist</option>
                     <?php while ($artist = $artists_result->fetch_assoc()): ?>
                         <option value="<?php echo $artist['artist_id']; ?>"><?php echo htmlspecialchars($artist['artist_name']); ?></option>
                     <?php endwhile; ?>
                 </select>
+
+                <label for="newArtist">Or Add New Artist</label>
+                <input type="text" id="newArtist" name="newArtist">
 
                 <label for="language">Language</label>
                 <select id="language" name="language">
