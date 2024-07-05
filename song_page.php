@@ -84,6 +84,17 @@ mysqli_close($conn);
         }
         .container {
             background-color: rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
         .like-button {
             font-size: 24px;
@@ -155,6 +166,7 @@ mysqli_close($conn);
 </head>
 <body>
     <div class="container">
+        <button class="close-button" onclick="goBack()">&times;</button>
         <header>
             <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Cover">
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
@@ -211,6 +223,10 @@ mysqli_close($conn);
         function hideToast() {
             var toast = document.getElementById("toast");
             toast.className = toast.className.replace("show", "");
+        }
+
+        function goBack() {
+            window.history.back();
         }
 
         document.addEventListener("DOMContentLoaded", function() {

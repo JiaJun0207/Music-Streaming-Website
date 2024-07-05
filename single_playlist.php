@@ -2,19 +2,53 @@
 session_start();
 include 'db_connection.php';
 
+// Check if the database connection was successful
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 // Simulate user ID (replace with actual session/user ID)
 $userID = $_SESSION["user_id"] ?? 1; // Ensure this is dynamically set based on session or user context
 
 // Get playlist ID from query string
-$playlistID = isset($_GET['playlist_id']) ? (int)$_GET['playlist_id'] : 0;
+$playlistID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Fetch playlist details
+if ($playlistID === 0) {
+    die('Invalid playlist ID');
+}
+
+// Initialize playlist variable
+$playlist = null;
+
+// Fetch playlist details from the `playlists` table
 $playlistQuery = $conn->prepare("SELECT * FROM playlists WHERE playlist_id = ?");
+if (!$playlistQuery) {
+    die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+}
 $playlistQuery->bind_param("i", $playlistID);
 $playlistQuery->execute();
-$playlist = $playlistQuery->get_result()->fetch_assoc();
+$playlistResult = $playlistQuery->get_result();
+
+if ($playlistResult->num_rows > 0) {
+    $playlist = $playlistResult->fetch_assoc();
+} else {
+    // If not found in `playlists`, try the `playlist` table
+    $playlistQuery = $conn->prepare("SELECT * FROM playlist WHERE playlist_id = ?");
+    if (!$playlistQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
+    $playlistQuery->bind_param("i", $playlistID);
+    $playlistQuery->execute();
+    $playlistResult = $playlistQuery->get_result();
+
+    if ($playlistResult->num_rows > 0) {
+        $playlist = $playlistResult->fetch_assoc();
+    }
+}
+
 $playlistQuery->close();
 
+// Check if playlist is found
 if (!$playlist) {
     die('Playlist not found');
 }
@@ -25,19 +59,27 @@ $isLikedSongs = ($playlist['playlist_name'] === 'Liked Songs');
 // Fetch songs in the playlist
 if ($isLikedSongs) {
     $songsQuery = $conn->prepare("
-        SELECT songs.id, songs.song_title, songs.artist
+        SELECT songs.id, songs.song_title, artist.artist_name
         FROM liked_songs 
         JOIN songs ON liked_songs.song_id = songs.id 
+        JOIN artist ON songs.artist_id = artist.artist_id
         WHERE liked_songs.user_id = ?
     ");
+    if (!$songsQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $songsQuery->bind_param("i", $userID);
 } else {
     $songsQuery = $conn->prepare("
-        SELECT songs.id, songs.song_title, songs.artist
+        SELECT songs.id, songs.song_title, artist.artist_name
         FROM playlist_songs 
         JOIN songs ON playlist_songs.song_id = songs.id 
+        JOIN artist ON songs.artist_id = artist.artist_id
         WHERE playlist_songs.playlist_id = ?
     ");
+    if (!$songsQuery) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $songsQuery->bind_param("i", $playlistID);
 }
 
@@ -71,6 +113,18 @@ mysqli_close($conn);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
 
         .playlist-header {
@@ -132,14 +186,6 @@ mysqli_close($conn);
             color: #666;
         }
 
-        .song-duration {
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
         .song-item a:hover .song-title {
             color: #007bff;
         }
@@ -147,6 +193,7 @@ mysqli_close($conn);
 </head>
 <body>
     <div class="playlist-container">
+        <button class="close-button" onclick="goBack()">&times;</button>
         <div class="playlist-header">
             <img src="<?php echo htmlspecialchars($playlist['playlist_image']) ?: 'assets/pic/default.png'; ?>" alt="Playlist Image" class="playlist-image">
             <div class="playlist-details">
@@ -160,7 +207,7 @@ mysqli_close($conn);
                     <li class="song-item">
                         <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>">
                             <span class="song-title"><?php echo htmlspecialchars($song['song_title']); ?></span>
-                            <span class="song-artist"><?php echo htmlspecialchars($song['artist']); ?></span>
+                            <span class="song-artist"><?php echo htmlspecialchars($song['artist_name']); ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -169,5 +216,11 @@ mysqli_close($conn);
             <?php endif; ?>
         </ul>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

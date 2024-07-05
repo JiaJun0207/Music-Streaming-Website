@@ -27,7 +27,7 @@ if (!empty($profile_image)) {
 }
 
 // Fetch trending songs
-$trending_sql = "SELECT id, song_title, artist_id FROM songs ORDER BY release_date DESC LIMIT 10";
+$trending_sql = "SELECT songs.id, songs.song_title, artist.artist_name FROM songs JOIN artist ON songs.artist_id = artist.artist_id ORDER BY release_date DESC LIMIT 10";
 $trending_result = $conn->query($trending_sql);
 
 // Fetch artist details along with the number of songs
@@ -37,8 +37,18 @@ $albums_sql = "SELECT a.artist_id, a.artist_name, a.artist_photo, COUNT(s.id) AS
                GROUP BY a.artist_id";
 $albums_result = $conn->query($albums_sql);
 
-// Fetch songs
-$songs_result = $conn->query("SELECT id, song_title, profile_picture_upload FROM songs");
+// Fetch songs with artist names
+$songs_sql = "SELECT s.id, s.song_title, s.profile_picture_upload, a.artist_name
+              FROM songs s
+              JOIN artist a ON s.artist_id = a.artist_id";
+$songs_result = $conn->query($songs_sql);
+
+// Fetch playlists
+$playlists_sql = "SELECT p.playlist_id, p.playlist_name, p.playlist_image, COUNT(sp.song_id) AS song_count 
+                  FROM playlist p 
+                  LEFT JOIN playlist_songs sp ON p.playlist_id = sp.playlist_id
+                  GROUP BY p.playlist_id";
+$playlists_result = $conn->query($playlists_sql);
 
 // Check if songs_result is valid before using fetch_assoc()
 if ($songs_result) {
@@ -76,8 +86,23 @@ if ($songs_result) {
             color: #ff0000;
         }
 
+        /* Customize scrollbar */
         body::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            width: 8px; /* Set the width of the scrollbar */
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Background of the scrollbar track */
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #888; /* Color of the scrollbar thumb */
+            border-radius: 10px; /* Rounded corners */
+            border: 2px solid #f1f1f1; /* Space around the thumb */
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* Color of the scrollbar thumb on hover */
         }
 
         .main-content {
@@ -90,80 +115,48 @@ if ($songs_result) {
             margin-right: 80px;
         }
 
-        .albums {
-            display: flex;
-            overflow-x: hidden; /* Hide the scrollbar */
-            white-space: nowrap; /* Prevent line breaks */
-            width: 100%;
-            position:relative;
-            justify-content: space-evenly;
-            margin-top: 5px;
-            margin-bottom: 0px;
+        .section-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff; /* Change header color to white */
         }
 
-        .album {
-            display: inline-block;
+        .albums, .songs, .playlists {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .album, .song-card, .playlist {
             background-color: #f9f9f9;
             padding: 10px;
             border-radius: 10px;
             text-align: center;
             width: 200px;
-            margin-right: 20px; /* Space between albums */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .album img {
+        .album img, .song-card img, .playlist img {
             width: 150px;
             height: 150px;
             border-radius: 5%;
             margin-bottom: 5px;
         }
 
-        .album span {
+        .album span, .song span, .playlist span {
             display: block;
             margin-bottom: 10px;
         }
-        .see-details {
+
+        .see-details, .listen, .view-playlist {
             text-decoration: none;
             color: #6200ea;
         }
 
-        .songs {
-            display: flex;
-            margin-top: 10px;
-            flex-wrap: nowrap; /* Prevent wrapping to new lines */
-            overflow-x: auto; /* Enable horizontal scrolling if necessary */
-            gap: 20px;
-        }
-
-        .song-card {
-            flex: 0 0 auto; /* Allow items to shrink, basis auto */
-            width: calc(50% - 460px); /* Adjust width as needed */
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .song-card img {
-            max-width: 150px;
-            height: 150px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .song-card .song {
-            margin-top: 10px;
-        }
-
-        .song-card .song span {
-            display: block;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        .song-card .song .listen {
-            display: block;
+        .song-card .listen {
             margin-top: 10px;
             background-color: #007bff;
             color: white;
@@ -172,8 +165,158 @@ if ($songs_result) {
             border-radius: 5px;
         }
 
-        .song-card .song .listen:hover {
+        .song-card .listen:hover {
             background-color: #0056b3;
+        }
+
+        /* New upload section */
+        .upload-banner {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-left: 240px;
+            margin-right: 130px;
+            margin-top: 20px;
+        }
+
+        .upload-banner img {
+            width: 100px; /* Adjust image size */
+            height: 100px; /* Adjust image size */
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .upload-banner-content {
+            flex-grow: 1;
+        }
+
+        .upload-banner-content h2 {
+            margin: 0;
+            font-size: 1.5em; /* Adjust font size */
+        }
+
+        .upload-banner-content p {
+            margin: 5px 0;
+            font-size: 1em; /* Adjust font size */
+        }
+
+        .upload-banner-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .upload-banner-actions button {
+            background-color: #ffffff;
+            color: #0072ff;
+            border: none;
+            padding: 10px 20px; /* Adjust padding */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-banner-actions button:hover {
+            background-color: #0072ff;
+            color: #ffffff;
+        }
+
+        /* Drawer styles */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #333;
+            color: #fff;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .drawer-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drawer-content li {
+            margin-bottom: 10px;
+        }
+
+        .drawer-content li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .drawer-content li a:hover {
+            text-decoration: underline;
+        }
+
+        .drawer-content h4 {
+            color: #ff0000;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            background-color: #444;
+            padding: 15px;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #drawer-title {
+            margin: 0;
+        }
+
+        #close-drawer-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .drawer-content {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* Button to toggle drawer */
+        #drawer-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6200ea;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+
+        #drawer-button:hover {
+            background-color: #3700b3;
+        }
+
+        #drawer-button.hide {
+            display: none;
         }
     </style>
 </head>
@@ -186,7 +329,6 @@ if ($songs_result) {
             <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
             <a href="user_playlist.php" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
             <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
-            <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
             <a href="UploadForm.php" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
             <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -199,20 +341,22 @@ if ($songs_result) {
     <div class="main-content">
         <div class="header">
             <input type="text" class="search-bar" placeholder="Artist, Album, Song, etc ...">
-            <img src="assets/pic/ikun-coin.png" alt="Coins" width="50" height="50">
-            <span><div class="counter">100</div></span>
         </div>
-        <div class="banner">
-            <h1>No need to upgrade just Support what you like!</h1>
-            <p>Donate to your favorite artist to support them ヾ(•ω•`)o</p>
-            <div class="banner-buttons">
-                <button class="donate-button">Donate!</button>
-                <button class="learn-more-button">Learn more</button>
-        </div>
+        <!-- New upload section -->
+        <div class="upload-banner">
+            <img src="assets/pic/ikun_background.png" alt="Upload Image">
+            <div class="upload-banner-content">
+                <h2>Upload Your First Track</h2>
+                <p>Experience our Free Music Streaming Platform</p>
+                <div class="upload-banner-actions">
+                    <button onclick="window.location.href='UploadForm.php'" style="font-family: Poppins, sans-serif;">Upload Track</button>
+                </div>
+            </div>
         </div>
         <div class="content-wrapper">
+            <!-- Albums Section -->
             <div class="content">
-                <!-- Albums Section -->
+                <div class="section-header">Recommended Artist</div>
                 <div class="albums">
                     <?php while ($album = $albums_result->fetch_assoc()): ?>
                         <div class="album">
@@ -224,45 +368,77 @@ if ($songs_result) {
                     <?php endwhile; ?>
                 </div>
             </div>
-            <div class="trending">
-                <h1>Popular and Trending</h1>
-                <ul>
-                    <?php while ($trending = $trending_result->fetch_assoc()): ?>
-                        <li><a href="song_page.php?id=<?php echo $trending['id']; ?>"><?php echo htmlspecialchars($trending['song_title']) . ' - ' . htmlspecialchars($trending['artist_id']); ?></a></li>
-                        <hr>
-                    <?php endwhile; ?>
-                    <h4 id="ads">Upload your production and become the next Trending! 🥳 </h4>
-                </ul>
-            </div>
-        </div>
-        <div class="content-wrapper">
+            <!-- Songs Section -->
             <div class="content">
-                <!-- Songs Section -->
+                <div class="section-header">Recommended Songs</div>
                 <div class="songs">
                     <?php
-                    // Assuming $albums_result is still valid here and has been reset if needed.
-                    $albums_result->data_seek(0); // Reset result set pointer if needed
-                    while ($album = $albums_result->fetch_assoc()) {
-                        $songs_sql = "SELECT song_title, profile_picture_upload FROM songs WHERE artist_id = ?";
-                        $stmt = $conn->prepare($songs_sql);
-                        $stmt->bind_param("i", $album['artist_id']);
-                        $stmt->execute();
-                        $stmt->bind_result($song_title, $song_profile_picture);
-                        while ($stmt->fetch()): ?>
-                            <div class="song-card">
-                                <img src="<?php echo htmlspecialchars($song_profile_picture); ?>" alt="Song Image">
-                                <div class="song">
-                                    <span><?php echo htmlspecialchars($song_title); ?></span>
-                                    <a href="song_page.php?id=<?php echo urlencode($album['artist_id']); ?>" class="listen">Listen</a>
-                                </div>
+                    // Assuming $songs_result is still valid here and has been reset if needed.
+                    $songs_result->data_seek(0); // Reset result set pointer if needed
+                    while ($song = $songs_result->fetch_assoc()): ?>
+                        <div class="song-card">
+                            <img src="<?php echo htmlspecialchars($song['profile_picture_upload']); ?>" alt="Song Image">
+                            <div class="song">
+                                <span><?php echo htmlspecialchars($song['song_title']); ?></span>
+                                <span><?php echo htmlspecialchars($song['artist_name']); ?></span>
+                                <a href="song_page.php?id=<?php echo urlencode($song['id']); ?>" class="listen">Listen</a>
                             </div>
-                        <?php endwhile;
-                        $stmt->close();
-                    }?>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+            <!-- Playlists Section -->
+            <div class="content">
+                <div class="section-header">Recommended Playlists</div>
+                <div class="playlists">
+                    <?php while ($playlist = $playlists_result->fetch_assoc()): ?>
+                        <div class="playlist">
+                            <img src="<?php echo htmlspecialchars($playlist['playlist_image']); ?>" alt="Playlist Image">
+                            <span><?php echo htmlspecialchars($playlist['playlist_name']); ?></span>
+                            <span><?php echo htmlspecialchars($playlist['song_count']) . ' Songs'; ?></span>
+                            <a href="single_playlist.php?id=<?php echo urlencode($playlist['playlist_id']); ?>" class="view-playlist">View Playlist</a>
+                        </div>
+                    <?php endwhile; ?>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Button to toggle drawer -->
+    <button id="drawer-button" onclick="toggleDrawer()">☰ Trending</button>
+
+    <!-- Drawer for Popular and Trending -->
+    <div id="trending-drawer" class="drawer">
+        <div class="drawer-header">
+            <span id="drawer-title">Popular and Trending</span>
+            <button id="close-drawer-button" onclick="toggleDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <ul>
+                <?php while ($trending = $trending_result->fetch_assoc()): ?>
+                    <li><a href="song_page.php?id=<?php echo $trending['id']; ?>"><?php echo htmlspecialchars($trending['song_title']) . ' - ' . htmlspecialchars($trending['artist_name']); ?></a></li>
+                    <hr>
+                <?php endwhile; ?>
+            </ul>
+            <h4 id="ads" style="color: white;">Upload your production and become the next Trending! 🥳 </h4>
+        </div>
+    </div>
+
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('trending-drawer');
+            const drawerButton = document.getElementById('drawer-button');
+            const closeButton = document.getElementById('close-drawer-button');
+
+            if (drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                drawerButton.classList.remove('hide');
+            } else {
+                drawer.classList.add('open');
+                drawerButton.classList.add('hide');
+            }
+        }
+    </script>
 </body>
 </html>
 

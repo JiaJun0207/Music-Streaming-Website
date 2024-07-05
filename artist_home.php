@@ -40,10 +40,106 @@ $conn->close();
     <title><?php echo htmlspecialchars($artist['artist_name'] ?? 'Artist Name'); ?> - Artist Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/artist_page.css">
-    <!-- Include any additional CSS or scripts here -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .artist-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .artist-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .artist-details {
+            flex-grow: 1;
+        }
+
+        .artist-details h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .artist-details p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .artist-details .artist-social a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .artist-details .artist-social a:hover {
+            text-decoration: underline;
+        }
+
+        .song-section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .song-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .song-item a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .song-item a:hover {
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <button class="close-button" onclick="goBack()">&times;</button>
         <header class="artist-header">
             <img class="artist-photo" src="<?php echo htmlspecialchars($artist['artist_photo'] ?? ''); ?>" alt="Artist Image">
             <div class="artist-details">
@@ -67,5 +163,11 @@ $conn->close();
             </ul>
         </section>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

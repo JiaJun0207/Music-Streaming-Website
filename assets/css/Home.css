@@ -38,22 +38,6 @@ body {
     font-weight: bold;
 }
 
-.navbar-coins {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.navbar-coins img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.navbar-coins span {
-    font-size: 18px;
-}
-
 .navbar-links-container {
     display: flex;
     flex-direction: column;
@@ -128,53 +112,6 @@ body {
     margin-right: auto;
 }
 
-.banner {
-    background: -webkit-linear-gradient(to right, #8A2387, #E94057, #F27121);
-    background: linear-gradient(to right, #8A2387, #E94057, #F27121);
-    text-align: center;
-    padding: 40px;
-    border-radius: 10px;
-    margin-left: 240px;
-    margin-right: 130px;
-}
-
-.banner h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.banner p {
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-
-.banner-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.donate-button,
-.learn-more-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    
-}
-
-.donate-button {
-    background-color: #6200ea;
-    color: #ffffff;
-}
-
-.learn-more-button {
-    background-color: #ffffff;
-    color: #6200ea;
-    border: 1px solid #6200ea;
-}
-
 .content-wrapper {
     display: flex;
     gap: 20px;
@@ -223,7 +160,7 @@ body {
 }
 
 #ads {
-    color: #6200ea;
+    color: white;
     margin-top: auto; 
     padding-top: 10px;
     padding-left: 20px;

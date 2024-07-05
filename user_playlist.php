@@ -178,10 +178,6 @@ function uploadImage($imagePath) {
             transition: background-color 0.3s;
         }
 
-        .navbar-link:hover {
-            background-color: #33334d;
-        }
-
         .navbar-user {
             display: flex;
             align-items: center;
@@ -266,6 +262,11 @@ function uploadImage($imagePath) {
         #logout:hover {
             color: #ff0000;
         }
+
+        #logout:hover .fas {
+            color: #ff0000; /* Red color for the icon on hover */
+        }
+        
         .navbar-link:hover {
             color: #7700ff;
         }
@@ -281,10 +282,9 @@ function uploadImage($imagePath) {
             <span>IKUN MUSIC</span>
         </div>
         <div class="navbar-links-container">
-            <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
+        <a href="User_Home.php" class="navbar-link"><i class="fas fa-home"></i> Home</a>
             <a href="user_playlist.php" class="navbar-link"><i class="fas fa-music"></i> My Playlist</a>
             <a href="#" class="navbar-link"><i class="fas fa-th-large"></i> Categories</a>
-            <a href="#" class="navbar-link"><i class="fas fa-envelope"></i> Message</a>
             <a href="Help_and_Support.html" class="navbar-link"><i class="fas fa-question-circle"></i> Help & Support</a>
             <a href="UploadForm.php" class="navbar-link"><i class="fas fa-space-shuttle"></i> Ikun Space</a>
             <a href="logout.php" class="navbar-link" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -302,7 +302,7 @@ function uploadImage($imagePath) {
                     <?php foreach ($playlists as $playlist): ?>
                         <li class="playlist-item">
                             <img src="<?php echo htmlspecialchars($playlist['playlist_image']) ?: 'assets/pic/default_cover.jpg'; ?>" alt="<?php echo htmlspecialchars($playlist['playlist_name']); ?>">
-                            <a href="single_playlist.php?playlist_id=<?php echo htmlspecialchars($playlist['playlist_id']); ?>">
+                            <a href="single_playlist_liked_song.php?playlist_id=<?php echo htmlspecialchars($playlist['playlist_id']); ?>">
                                 <?php echo htmlspecialchars($playlist['playlist_name']); ?>
                             </a>
                             <span>By <?php echo htmlspecialchars($name); ?></span>
