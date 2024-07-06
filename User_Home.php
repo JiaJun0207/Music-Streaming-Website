@@ -100,7 +100,7 @@ if ($songs_result) {
             font-size: 1.5em;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #ffffff; /* Change header color to white */
+            color: #ffffff; 
         }
 
         .albums, .songs, .playlists {
@@ -370,8 +370,8 @@ if ($songs_result) {
     <div class="main-content">
         <div class="header">
         <form action="search.php" method="GET">
-            <input type="text" name="query" class="search-bar" placeholder="Artist, Album, Song, etc ...">
-            <button type="submit">Search</button>
+            <input type="text" name="query" placeholder="Search for Artist, Album, Song, etc ..." style="padding: 10px; width: 1280px; border: 1px solid #ccc; border-radius: 4px 0 0 4px;">
+            <button type="submit" style="background-color: #007BFF; color: white; border: 1px solid #007BFF; border-radius: 0 4px 4px 0; padding: 10px 20px; cursor: pointer;">Search</button>
         </form>
         </div>
         <!-- New upload section -->

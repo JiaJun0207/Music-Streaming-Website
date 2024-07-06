@@ -42,20 +42,21 @@ $conn->close();
     <link rel="stylesheet" href="assets/css/artist_page.css">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        background-image: url('assets/pic/background.png');
         }
 
         .container {
-            width: 80%;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
+        width: 100%;
+        background-color: #fff;
+        margin-top: 250px;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
         }
 
         .close-button {
@@ -72,7 +73,7 @@ $conn->close();
         .artist-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 50px;
         }
 
         .artist-photo {
