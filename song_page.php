@@ -89,6 +89,15 @@ mysqli_close($conn);
         .like-button:hover {
             color: #ff0000;
         }
+
+        .like-button.liked .fa-heart {
+            color: #ff0000;
+        }
+
+        .like-button.unliked .fa-heart {
+            color: #ccc;
+        }
+        
         .profile-image {
             width: 40px;
             height: 40px;
