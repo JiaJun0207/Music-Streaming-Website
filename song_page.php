@@ -6,6 +6,8 @@ include 'song.php';
 
 $songID = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $song = fetchSongDetails($conn, $songID);
+$userName = $_SESSION['user_name'];
+$profileImageUrl = $_SESSION['profile_image_url'];
 
 if (!$song) {
     header("Location: error.php");
@@ -26,36 +28,6 @@ $isLikedQuery->execute();
 $result = $isLikedQuery->get_result();
 $likeStatus = $result->fetch_assoc()['count'] > 0;
 $isLikedQuery->close();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['commentText'])) {
-        $commentText = $_POST['commentText'];
-        $result = addComment($conn, $songID, $userID, $commentText);
-
-        if ($result) {
-            header("Location: {$_SERVER['REQUEST_URI']}");
-            exit;
-        } else {
-            $error = "Error adding comment.";
-        }
-    } elseif (isset($_POST['like'])) {
-        if ($likeStatus) {
-            // Remove from Liked Songs playlist
-            $deleteQuery = $conn->prepare("DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?");
-            $deleteQuery->bind_param("ii", $userID, $songID);
-            $deleteQuery->execute();
-            $deleteQuery->close();
-            $likeStatus = false; // Update like status
-        } else {
-            // Add to Liked Songs playlist
-            $likeQuery = $conn->prepare("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)");
-            $likeQuery->bind_param("ii", $userID, $songID);
-            $likeQuery->execute();
-            $likeQuery->close();
-            $likeStatus = true; // Update like status
-        }
-    }
-}
 
 $comments = fetchComments($conn, $songID);
 mysqli_close($conn);
@@ -85,6 +57,7 @@ mysqli_close($conn);
         .container {
             background-color: rgba(255, 255, 255, 0.8);
             position: relative;
+            padding: 20px;
         }
         .close-button {
             position: absolute;
@@ -223,8 +196,9 @@ mysqli_close($conn);
             <h1><?php echo htmlspecialchars($song['song_title']); ?></h1>
             <p><?php echo htmlspecialchars($song['artist_name']); ?></p>
             <p><?php echo htmlspecialchars($song['categories']); ?></p>
-            <form method="POST">
-                <button type="submit" name="like" class="like-button"><i class="far fa-heart"></i></button>
+            <form id="like-form" method="POST">
+                <input type="hidden" name="song_id" value="<?php echo htmlspecialchars($songID); ?>">
+                <button type="button" id="like-button" class="like-button"><i class="far fa-heart"></i></button>
             </form>
         </header>
         <main>
@@ -252,8 +226,9 @@ mysqli_close($conn);
             </audio>
             <section class="comments">
                 <h2>Comments</h2>
-                <form id="comment-form" method="POST">
-                    <textarea id="comment-text" name="commentText" placeholder="Write a Comment..." required></textarea>
+                <form id="comment-form">
+                    <textarea id="comment-text" name="comment_text" placeholder="Write a Comment..." required></textarea>
+                    <input type="hidden" name="song_id" value="<?php echo htmlspecialchars($songID); ?>">
                     <button type="submit" class="send-button">Submit</button>
                 </form>
                 <div id="comment-list">
@@ -282,77 +257,124 @@ mysqli_close($conn);
     </div>
 
     <script>
+        // Retrieve user information from a hidden element or script variable
+        const userName = 'Your Name'; // Set this dynamically from your server
+        const profileImageUrl = 'path/to/profile/image.jpg'; // Set this dynamically from your server
+
+        const likeButton = document.getElementById('like-button');
+        const commentForm = document.getElementById('comment-form');
+        const commentList = document.getElementById('comment-list');
+        const toast = document.getElementById('toast');
         const audioPlayer = document.getElementById('audio-player');
         const playPauseIcon = document.getElementById('play-pause-icon');
         const progressBar = document.getElementById('progress-bar');
-        const currentTimeElem = document.getElementById('current-time');
         const volumeBar = document.getElementById('volume-bar');
+        const currentTime = document.getElementById('current-time');
 
-        audioPlayer.volume = 0.4;
+        // Handle like button click
+        likeButton.addEventListener('click', function() {
+            const songID = document.querySelector('input[name="song_id"]').value;
 
-        audioPlayer.addEventListener('timeupdate', () => {
-            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-            progressBar.value = progress;
-            currentTimeElem.textContent = formatTime(audioPlayer.currentTime);
+            fetch('ajax_handler.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'like',
+                    song_id: songID
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+                    likeButton.classList.toggle('liked');
+                } else {
+                    showToast(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
 
-        audioPlayer.addEventListener('ended', () => {
-            playPauseIcon.className = 'fas fa-play';
-            progressBar.value = 0;
-            currentTimeElem.textContent = formatTime(0);
+        // Handle comment form submission
+        commentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(commentForm);
+
+            fetch('ajax_handler.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+                    const newComment = document.createElement('div');
+                    newComment.classList.add('comment');
+                    newComment.innerHTML = `
+                        <div class="comment-header">
+                            <img src="${profileImageUrl}" alt="Profile Picture" class="profile-image">
+                            <p><strong>${userName}:</strong> ${document.getElementById('comment-text').value}</p>
+                        </div>
+                        <small>Just now</small>
+                    `;
+                    commentList.appendChild(newComment);
+                    document.getElementById('comment-text').value = '';
+                } else {
+                    showToast(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Handle play/pause button click
+        function togglePlayPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseIcon.classList.replace('fa-play', 'fa-pause');
+            } else {
+                audioPlayer.pause();
+                playPauseIcon.classList.replace('fa-pause', 'fa-play');
+            }
+        }
+
+        // Update progress bar and time
+        audioPlayer.addEventListener('timeupdate', () => {
+            const value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.value = value;
+            currentTime.textContent = formatTime(audioPlayer.currentTime);
         });
 
         progressBar.addEventListener('input', () => {
-            audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+            const time = (progressBar.value / 100) * audioPlayer.duration;
+            audioPlayer.currentTime = time;
         });
 
         volumeBar.addEventListener('input', () => {
             audioPlayer.volume = volumeBar.value;
         });
 
-        function togglePlayPause() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                playPauseIcon.className = 'fas fa-pause';
-            } else {
-                audioPlayer.pause();
-                playPauseIcon.className = 'fas fa-play';
-            }
-        }
-
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
         function showToast(message) {
-            var toast = document.getElementById("toast");
-            toast.querySelector(".message").innerText = message;
-            toast.className = "toast show";
-            setTimeout(function(){ hideToast(); }, 4000);
+            toast.querySelector('.message').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
         function hideToast() {
-            var toast = document.getElementById("toast");
-            toast.className = toast.className.replace("show", "");
+            toast.classList.remove('show');
         }
 
         function goBack() {
             window.history.back();
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const likeButton = document.querySelector('.like-button');
-
-            likeButton.addEventListener('click', function() {
-                if (likeButton.style.color === 'rgb(255, 0, 0)') {
-                    likeButton.style.color = '#ccc';
-                } else {
-                    likeButton.style.color = '#ff0000';
-                }
-            });
-        });
     </script>
 </body>
 </html>
