@@ -100,7 +100,7 @@ $conn->close();
         .song-card {
             width: calc(33.33% - 20px);
             background-color: #f0f0f0;
-            padding: 10px;
+            padding: 1px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
@@ -132,6 +132,12 @@ $conn->close();
         .action-link:hover {
             background-color: #0056b3;
         }
+        .bottom-right {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -142,7 +148,11 @@ $conn->close();
         <button type="submit" style="background-color: #007BFF; color: white; border: 1px solid #007BFF; border-radius: 0 4px 4px 0; padding: 10px 20px; cursor: pointer;">Search</button>
     </div>
     </form>
-
+    
     <?php echo $search_results; ?>
+
+    <div class="bottom-right">
+    <a href="User_Home.php" class="action-link">Go back to Home</a>
+    </div>
 </body>
 </html>
