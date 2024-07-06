@@ -369,7 +369,10 @@ if ($songs_result) {
     </div>
     <div class="main-content">
         <div class="header">
-            <input type="text" class="search-bar" placeholder="Artist, Album, Song, etc ...">
+        <form action="search.php" method="GET">
+            <input type="text" name="query" class="search-bar" placeholder="Artist, Album, Song, etc ...">
+            <button type="submit">Search</button>
+        </form>
         </div>
         <!-- New upload section -->
         <div class="upload-banner">
