@@ -64,9 +64,10 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Song Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Poppins, sans-serif;
             margin: 0;
             padding: 0;
             background-image: url('assets/pic/background.png');
@@ -144,8 +145,8 @@ $conn->close();
     <h1>Search Songs</h1>
     <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
     <div style="display: flex; justify-content: center;">
-        <input type="text" name="query" placeholder="Search for songs..." style="padding: 10px; width: 550px; border: 1px solid #ccc; border-radius: 4px 0 0 4px;">
-        <button type="submit" style="background-color: #007BFF; color: white; border: 1px solid #007BFF; border-radius: 0 4px 4px 0; padding: 10px 20px; cursor: pointer;">Search</button>
+        <input type="text" name="query" placeholder="Search for songs..." style="font-family:Poppins; padding: 10px; width: 550px; border: 1px solid #ccc; border-radius: 4px 0 0 4px;">
+        <button type="submit" style="font-family:Poppins; background-color: #007BFF; color: white; border: 1px solid #007BFF; border-radius: 0 4px 4px 0; padding: 10px 20px; cursor: pointer;">Search</button>
     </div>
     </form>
     
