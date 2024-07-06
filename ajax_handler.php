@@ -22,19 +22,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Remove like
                 $stmt = $conn->prepare("DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?");
                 $stmt->bind_param("ii", $userID, $songID);
-                $stmt->execute();
+                if ($stmt->execute()) {
+                    $response = array('success' => true, 'message' => 'Song unliked');
+                } else {
+                    $response = array('success' => false, 'message' => 'Failed to unlike song');
+                }
                 $stmt->close();
-                $response = array('success' => true, 'message' => 'Song unliked');
             } else {
                 // Add like
                 $stmt = $conn->prepare("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)");
                 $stmt->bind_param("ii", $userID, $songID);
-                $stmt->execute();
+                if ($stmt->execute()) {
+                    $response = array('success' => true, 'message' => 'Song liked');
+                } else {
+                    $response = array('success' => false, 'message' => 'Failed to like song');
+                }
                 $stmt->close();
-                $response = array('success' => true, 'message' => 'Song liked');
             }
+        } else {
+            $response = array('success' => false, 'message' => 'Song ID or user ID missing');
         }
-    } elseif (isset($_POST['comment_text']) && isset($_SESSION['user_id'])) {
+    } elseif (isset($_POST['comment_text']) && isset($_POST['song_id']) && isset($_SESSION['user_id'])) {
         $commentText = trim($_POST['comment_text']);
         $userID = intval($_SESSION['user_id']);
         $songID = intval($_POST['song_id']); // Ensure you have song_id in the POST data
@@ -51,7 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $response = array('success' => false, 'message' => 'Comment cannot be empty');
         }
+    } else {
+        $response = array('success' => false, 'message' => 'Invalid request parameters');
     }
+} else {
+    $response = array('success' => false, 'message' => 'Invalid request method');
 }
 
 header('Content-Type: application/json');
