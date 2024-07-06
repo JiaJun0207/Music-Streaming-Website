@@ -6,8 +6,15 @@ include 'song.php';
 
 $songID = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $song = fetchSongDetails($conn, $songID);
-$userName = $_SESSION['user_name'];
-$profileImageUrl = $_SESSION['profile_image_url'];
+
+// Check if user is logged in and session variables are set
+if (isset($_SESSION['user_name']) && isset($_SESSION['profile_image_url'])) {
+    $userName = $_SESSION['user_name'];
+    $profileImageUrl = $_SESSION['profile_image_url'];
+} else {
+    $userName = 'Guest'; // Default value if user is not logged in
+    $profileImageUrl = 'default-profile-image.jpg'; // Default profile image
+}
 
 if (!$song) {
     header("Location: error.php");
@@ -257,9 +264,13 @@ mysqli_close($conn);
     </div>
 
     <script>
-        // Retrieve user information from a hidden element or script variable
-        const userName = 'Your Name'; // Set this dynamically from your server
-        const profileImageUrl = 'path/to/profile/image.jpg'; // Set this dynamically from your server
+        // Pass PHP variables to JavaScript
+        const userName = <?php echo json_encode($userName); ?>;
+        const profileImageUrl = <?php echo json_encode($profileImageUrl); ?>;
+
+        // JavaScript code to use these variables
+        console.log("User Name:", userName);
+        console.log("Profile Image URL:", profileImageUrl);
 
         const likeButton = document.getElementById('like-button');
         const commentForm = document.getElementById('comment-form');
