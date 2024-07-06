@@ -132,6 +132,7 @@ function uploadImage($imagePath) {
             margin: 0;
             padding: 0;
             display: flex;
+            background-image: url('assets/pic/background.png');
         }
 
         .sidebar {

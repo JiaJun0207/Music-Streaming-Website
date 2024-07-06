@@ -104,6 +104,7 @@ mysqli_close($conn);
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+
         }
 
         .playlist-container {
