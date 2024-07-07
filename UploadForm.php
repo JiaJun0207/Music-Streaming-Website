@@ -212,6 +212,7 @@ $artists_result = $conn->query($artists_sql);
                     <option value="chinese">Chinese</option>
                     <option value="korean">Korean</option>
                     <option value="japanese">Japanese</option>
+                    <option value="malay">Malay</option>
                 </select>
 
                 <label for="categories">Categories<span class="required">*</span></label>
