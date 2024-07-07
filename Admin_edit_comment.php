@@ -47,7 +47,7 @@ $comments = fetchComments($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Comments Page</title>
+    <title>Admin Comments List Page</title>
     <link rel="stylesheet" href="Admin_edit_comment.css"> <!-- Adjust the path to your CSS file -->
 </head>
 <body>
