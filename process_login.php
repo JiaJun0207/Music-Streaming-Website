@@ -1,9 +1,7 @@
 <?php
-
 $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
     $conn = require __DIR__ . "/db_connection.php";
     
     // Get the email and password from POST request
@@ -17,10 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = $stmt->get_result();
     
     if ($user = $result->fetch_assoc()) {
-        
         // Verify the password
         if (password_verify($password, $user["password_hash"])) {
-            
             session_start();
             session_regenerate_id();
             
@@ -29,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['profile_image_url'] = $user['profile_image'] ? $user['profile_image'] : 'default-profile-image.jpg';
             
-            // Redirect to the desired page
-            header("Location: User_Home.php");
+            // Return success response
+            echo json_encode(['status' => 'success']);
             exit;
         } else {
             $is_invalid = true;
@@ -42,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
     $conn->close();
     
-    // Redirect back to login page with an error message
+    // Return error response
     if ($is_invalid) {
-        header("Location: index.php?login_error=1");
+        echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
         exit;
     }
 }
