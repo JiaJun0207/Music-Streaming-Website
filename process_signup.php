@@ -19,6 +19,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Invalid email format");
     }
     
+    // Check if email already exists
+    $check_email_sql = "SELECT id FROM users WHERE email = ?";
+    $check_email_stmt = $conn->prepare($check_email_sql);
+    
+    if ($check_email_stmt === false) {
+        die("SQL prepare error: " . $conn->error);
+    }
+    
+    $check_email_stmt->bind_param("s", $email);
+    $check_email_stmt->execute();
+    $check_email_stmt->store_result();
+    
+    if ($check_email_stmt->num_rows > 0) {
+        die("Email address already taken");
+    }
+    
+    $check_email_stmt->close();
+    
     // Hash the password
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
     
@@ -36,12 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Success: Send response back to JavaScript indicating success
         echo "User registered successfully";
     } else {
-        // Check for duplicate email error (1062 error code for MySQL)
-        if ($conn->errno === 1062) {
-            echo "Email address already taken";
-        } else {
-            echo "Error: " . $conn->error;
-        }
+        echo "Error: " . $conn->error;
     }
     
     $stmt->close();
