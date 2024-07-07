@@ -74,9 +74,6 @@ $conn->close();
             </div>   
         </aside>
         <main class="main-content">
-            <header>
-                <input type="text" name="search" placeholder="Artist, Album, Song, etc...">
-            </header>
             <h1>Artist List</h1>
             <button id="addNewBtn">Add New</button>
             <table>
