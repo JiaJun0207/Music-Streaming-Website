@@ -388,7 +388,7 @@ if ($songs_result) {
         <div class="content-wrapper">
     <!-- Albums Section -->
         <div class="content-section">
-            <div class="section-header">Recommended Artist</div>
+            <div class="section-header">Featured Artist</div>
             <div class="albums scroll-container">
                 <?php while ($album = $albums_result->fetch_assoc()): ?>
                     <div class="album">
@@ -402,7 +402,7 @@ if ($songs_result) {
         </div>
         <!-- Songs Section -->
         <div class="content-section">
-            <div class="section-header">Recommended Songs</div>
+            <div class="section-header">Featured Songs</div>
             <div class="songs scroll-container">
                 <?php
                 // Assuming $songs_result is still valid here and has been reset if needed.
@@ -421,7 +421,7 @@ if ($songs_result) {
         </div>
         <!-- Playlists Section -->
         <div class="content-section">
-            <div class="section-header">Recommended Playlists</div>
+            <div class="section-header">Featured Playlists</div>
             <div class="playlists scroll-container">
                 <?php while ($playlist = $playlists_result->fetch_assoc()): ?>
                     <div class="playlist">
