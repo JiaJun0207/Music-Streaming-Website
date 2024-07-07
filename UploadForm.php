@@ -269,7 +269,7 @@ $artists_result = $conn->query($artists_sql);
         var toast = document.getElementById("toast");
         toast.querySelector(".message").innerText = message;
         toast.className = "toast show";
-        setTimeout(function(){ hideToast(); }, 4000); // Show toast for 4 seconds
+        setTimeout(function(){ hideToast(); }, 20000); // Show toast for 4 seconds
     }
 
     function hideToast() {

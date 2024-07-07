@@ -7,13 +7,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Escape user inputs for security
     $songTitle = mysqli_real_escape_string($conn, $_POST['songTitle']);
     $artist_id = mysqli_real_escape_string($conn, $_POST['artist_id']);
-    $newArtist = mysqli_real_escape_string($conn, $_POST['newArtist']);
     $language = mysqli_real_escape_string($conn, $_POST['language']);
     $categories = mysqli_real_escape_string($conn, $_POST['categories']);
     $releaseDate = $_POST['releaseDate']; // Assuming date is in correct format from HTML form
 
     // Check if a new artist is being added
-    if (!empty($newArtist)) {
+    if (isset($_POST['newArtist']) && !empty($_POST['newArtist'])) {
+        $newArtist = mysqli_real_escape_string($conn, $_POST['newArtist']);
+
         // Insert the new artist into the artist table
         $artist_sql = "INSERT INTO artist (artist_name) VALUES ('$newArtist')";
         if (mysqli_query($conn, $artist_sql)) {
