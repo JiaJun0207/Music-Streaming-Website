@@ -155,12 +155,12 @@
             </div>
             <div id="login-form" class="form-content">
                 <h2>Log In</h2>
-                <form action="process_login.php" method="post">
+                <form id="login-form" action="process_login.php" method="post" onsubmit="login(event)">
                     <label for="login_email">Email</label>
                     <input type="email" id="login_email" name="email" placeholder="hello@gmail.com" required>
                     <label for="login_password">Password</label>
                     <input type="password" id="login_password" name="password" placeholder="********" required>
-                    <button type="submit">Log In</button>
+                    <button type="submit" id="login-button">Log In</button>
                 </form>
                 <p>Don’t have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
                 <p><a href="forgot_password.php">Forgot Password?</a></p>
@@ -318,6 +318,37 @@
         };
         xhr.send('otp=' + encodeURIComponent(otp) + '&email=' + encodeURIComponent(email));
     }
+
+    function login(event) {
+        event.preventDefault();
+        let email = document.getElementById('login_email').value;
+        let password = document.getElementById('login_password').value;
+        let loginButton = document.getElementById('login-button');
+
+        loginButton.disabled = true;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'process_login.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        window.location.href = 'User_Home.php'; // Redirect on success
+                    } else {
+                        showToast(response.message); // Show error toast message
+                        loginButton.disabled = false;
+                    }
+                } else {
+                    showToast('Error: ' + xhr.responseText);
+                    loginButton.disabled = false;
+                }
+            }
+        };
+        xhr.send('email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password));
+    }
     </script>
 </body>
+</html>
 </html>
