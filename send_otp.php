@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['email'])) {
         $result = $stmt->get_result();
         $stmt->close();
 
-        if ($result->num_rows > 0) {
+        if ($result->num_rows === 0) { // Email does not exist, proceed with sending OTP
             // Generate random OTP
             $otp = rand(100000, 999999);
             $_SESSION['otp'] = $otp;
@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['email'])) {
                 echo json_encode(['status' => 'error', 'message' => 'OTP could not be sent. Mailer Error: ' . $mail->ErrorInfo]);
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Email does not exist']);
+            echo json_encode(['status' => 'error', 'message' => 'Email already exists']);
         }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Invalid email']);
